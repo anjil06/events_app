@@ -1,159 +1,140 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../events/domain/models/event_model.dart';
 
 class FeaturedEventCard extends StatelessWidget {
-  final String title;
-  final String organizer;
-  final String date;
-  final String location;
+  final EventModel event;
 
-  const FeaturedEventCard({
-    super.key,
-    required this.title,
-    required this.organizer,
-    required this.date,
-    required this.location,
-  });
+  const FeaturedEventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 310,
+    return GestureDetector(
+      onTap: () {
+        context.push(AppRoutes.eventDetails, extra: event);
+      },
+      child: Container(
+        width: 310,
 
-      padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
 
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            AppTheme.primaryOrange,
-            AppTheme.darkOrange,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppTheme.primaryOrange, AppTheme.darkOrange],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+
+          borderRadius: BorderRadius.circular(22),
+
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryOrange.withValues(alpha: 0.25),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
         ),
 
-        borderRadius: BorderRadius.circular(22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
 
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.primaryOrange
-                .withValues(alpha: 0.25),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
 
-        children: [
-          Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
 
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
 
-                decoration: BoxDecoration(
-                  color: Colors.white
-                      .withValues(alpha: 0.2),
-
-                  borderRadius:
-                      BorderRadius.circular(8),
-                ),
-
-                child: const Text(
-                  'FEATURED',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
+                  child: const Text(
+                    'FEATURED',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-              ),
 
-              const Icon(
-                Icons.bookmark_border_rounded,
-                color: Colors.white,
-              ),
-            ],
-          ),
-
-          const Spacer(),
-
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 21,
-              fontWeight: FontWeight.w800,
+                const Icon(Icons.bookmark_border_rounded, color: Colors.white),
+              ],
             ),
-          ),
 
-          const SizedBox(height: 8),
+            const Spacer(),
 
-          Text(
-            organizer,
-            style: TextStyle(
-              color: Colors.white
-                  .withValues(alpha: 0.8),
-              fontSize: 13,
-            ),
-          ),
+            Text(
+              event.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
 
-          const SizedBox(height: 12),
-
-          Row(
-            children: [
-              const Icon(
-                Icons.calendar_today_outlined,
-                size: 15,
+              style: const TextStyle(
                 color: Colors.white,
+                fontSize: 21,
+                fontWeight: FontWeight.w800,
               ),
+            ),
 
-              const SizedBox(width: 6),
+            const SizedBox(height: 8),
 
-              Text(
-                date,
-                style: const TextStyle(
+            Text(
+              event.organizerName,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 13,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            Row(
+              children: [
+                const Icon(
+                  Icons.calendar_today_outlined,
+                  size: 15,
                   color: Colors.white,
-                  fontSize: 12,
                 ),
-              ),
 
-              const SizedBox(width: 14),
+                const SizedBox(width: 6),
 
-              const Icon(
-                Icons.location_on_outlined,
-                size: 15,
-                color: Colors.white,
-              ),
+                Text(
+                  event.time,
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
 
-              const SizedBox(width: 4),
+                const SizedBox(width: 14),
 
-              Expanded(
-                child: Text(
-                  location,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 15,
+                  color: Colors.white,
+                ),
+
+                const SizedBox(width: 4),
+
+                Expanded(
+                  child: Text(
+                    event.location,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

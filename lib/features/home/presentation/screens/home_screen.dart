@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/category_chip.dart';
@@ -8,6 +10,12 @@ import '../widgets/home_app_bar.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/section_header.dart';
 import '../widgets/welcome_section.dart';
+import '../../../../features/events/domain/models/event_model.dart';
+import '../../../../features/events/data/services/event_services.dart';
+import '../../../../core/routes/app_routes.dart';
+
+import '../../../bookmarks/data/services/bookmark_service.dart';
+import '../../../bookmarks/domain/models/bookmark_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategory = 0;
+  final Map<String, bool> _savedEvents = {};
+  final Map<String, bool> _bookmarkLoading = {};
 
   final List<String> _categories = [
     'All',
@@ -28,51 +38,162 @@ class _HomeScreenState extends State<HomeScreen> {
     'Meetups',
   ];
 
-  final List<Map<String, dynamic>> _events = [
-    {
-      'title': 'AI Innovation Hackathon',
-      'organizer': 'Tech Community',
-      'date': 'Aug 24, 2026',
-      'time': '10:00 AM',
-      'location': 'Online',
-      'category': 'Hackathons',
-      'image': 'assets/images/hackathon.jpg',
-      'isOnline': true,
-    },
-    {
-      'title': 'Flutter Development Workshop',
-      'organizer': 'Google Developer Group',
-      'date': 'Aug 28, 2026',
-      'time': '2:00 PM',
-      'location': 'Hyderabad',
-      'category': 'Workshops',
-      'image': 'assets/images/flutter.jpg',
-      'isOnline': false,
-    },
-    {
-      'title': 'Data Science & AI Webinar',
-      'organizer': 'TechScope',
-      'date': 'Sep 02, 2026',
-      'time': '6:00 PM',
-      'location': 'Online',
-      'category': 'Webinars',
-      'image': 'assets/images/data_science.jpg',
-      'isOnline': true,
-    },
-  ];
+  Stream<List<EventModel>> get _eventsStream {
+    return EventService.instance.getEvents();
+  }
 
-  List<Map<String, dynamic>> get _filteredEvents {
-    if (_selectedCategory == 0) {
-      return _events;
+  void _showMessage(String message) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
 
-    final selected = _categories[_selectedCategory];
+  Future<void> _toggleBookmark(EventModel event) async {
+    final user = FirebaseAuth.instance.currentUser;
 
-    return _events
-        .where(
-          (event) => event['category'] == selected,
-        )
-        .toList();
+    if (user == null) {
+      _showMessage('Please login to save events.');
+      return;
+    }
+
+    if (event.id.isEmpty) {
+      _showMessage('Unable to save this event.');
+      return;
+    }
+
+    setState(() {
+      _bookmarkLoading[event.id] = true;
+    });
+
+    try {
+      final existingBookmark = await BookmarkService.instance.getBookmark(
+        userId: user.uid,
+        eventId: event.id,
+      );
+
+      if (existingBookmark != null) {
+        // Remove bookmark
+        await BookmarkService.instance.removeBookmark(
+          userId: user.uid,
+          eventId: event.id,
+        );
+
+        if (!mounted) return;
+
+        setState(() {
+          _savedEvents[event.id] = false;
+          _bookmarkLoading[event.id] = false;
+        });
+
+        _showMessage('Removed from saved events.');
+      } else {
+        // Add bookmark
+        final bookmark = BookmarkModel(
+          id: '',
+          userId: user.uid,
+          eventId: event.id,
+          eventTitle: event.title,
+          savedAt: DateTime.now(),
+        );
+
+        await BookmarkService.instance.addBookmark(bookmark);
+
+        if (!mounted) return;
+
+        setState(() {
+          _savedEvents[event.id] = true;
+          _bookmarkLoading[event.id] = false;
+        });
+
+        _showMessage('Event saved successfully! 🔖');
+      }
+    } catch (e) {
+      debugPrint('BOOKMARK ERROR: $e');
+
+      if (!mounted) return;
+
+      setState(() {
+        _bookmarkLoading[event.id] = false;
+      });
+
+      _showMessage('Unable to update saved event.');
+    }
+  }
+
+  Widget _buildErrorState(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.cloud_off_rounded,
+              size: 60,
+              color: AppTheme.primaryOrange,
+            ),
+
+            const SizedBox(height: 16),
+
+            const Text(
+              'Unable to load events',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              'Please check your internet connection '
+              'and try again.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {});
+              },
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.event_busy_rounded,
+              size: 64,
+              color: AppTheme.primaryOrange,
+            ),
+
+            const SizedBox(height: 16),
+
+            const Text(
+              'No events available',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              'New technical events will appear here.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -85,38 +206,63 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         color: AppTheme.primaryOrange,
         onRefresh: () async {
-          await Future.delayed(
-            const Duration(milliseconds: 800),
-          );
+          await Future.delayed(const Duration(milliseconds: 800));
         },
 
-        child: ListView(
-          padding: const EdgeInsets.only(
-            bottom: 100,
-          ),
-          children: [
-            const WelcomeSection(),
+        child: StreamBuilder<List<EventModel>>(
+          stream: _eventsStream,
 
-            const SizedBox(height: 20),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-            const HomeSearchBar(),
+            if (snapshot.hasError) {
+              return _buildErrorState(snapshot.error.toString());
+            }
 
-            const SizedBox(height: 24),
+            final events = snapshot.data ?? [];
 
-            _buildCategories(),
+            if (events.isEmpty) {
+              return _buildEmptyState();
+            }
 
-            const SizedBox(height: 28),
+            return RefreshIndicator(
+              color: AppTheme.primaryOrange,
 
-            _buildFeaturedEvents(),
+              onRefresh: () async {
+                await Future.delayed(const Duration(milliseconds: 500));
+              },
 
-            const SizedBox(height: 28),
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 100),
 
-            _buildUpcomingEvents(),
+                children: [
+                  const WelcomeSection(),
 
-            const SizedBox(height: 28),
+                  const SizedBox(height: 20),
 
-            _buildTrendingEvents(),
-          ],
+                  const HomeSearchBar(),
+
+                  const SizedBox(height: 24),
+
+                  _buildCategories(),
+
+                  const SizedBox(height: 28),
+
+                  _buildFeaturedEvents(events),
+
+                  const SizedBox(height: 28),
+
+                  _buildUpcomingEvents(events),
+
+                  const SizedBox(height: 28),
+
+                  _buildTrendingEvents(events),
+                ],
+              ),
+            );
+          },
         ),
       ),
 
@@ -128,9 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          title: 'Explore Categories',
-        ),
+        const SectionHeader(title: 'Explore Categories'),
 
         const SizedBox(height: 14),
 
@@ -138,15 +282,13 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 42,
 
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
 
             scrollDirection: Axis.horizontal,
 
             itemCount: _categories.length,
 
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, index) {
               return const SizedBox(width: 10);
             },
 
@@ -168,14 +310,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFeaturedEvents() {
+  Widget _buildFeaturedEvents(List<EventModel> events) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          title: 'Featured Events',
-          showViewAll: true,
-        ),
+        const SectionHeader(title: 'Featured Events', showViewAll: true),
 
         const SizedBox(height: 14),
 
@@ -183,27 +322,20 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 230,
 
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
 
             scrollDirection: Axis.horizontal,
 
-            itemCount: _events.length,
+            itemCount: events.length,
 
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, index) {
               return const SizedBox(width: 16);
             },
 
             itemBuilder: (context, index) {
-              final event = _events[index];
+              final event = events[index];
 
-              return FeaturedEventCard(
-                title: event['title'],
-                organizer: event['organizer'],
-                date: event['date'],
-                location: event['location'],
-              );
+              return FeaturedEventCard(event: event);
             },
           ),
         ),
@@ -211,53 +343,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildUpcomingEvents() {
-    final events = _filteredEvents;
+  Widget _buildUpcomingEvents(List<EventModel> events) {
+    final filteredEvents = _selectedCategory == 0
+        ? events
+        : events
+              .where(
+                (event) => event.category == _categories[_selectedCategory],
+              )
+              .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          title: 'Upcoming Events',
-          showViewAll: true,
-        ),
+        const SectionHeader(title: 'Upcoming Events', showViewAll: true),
 
         const SizedBox(height: 14),
 
-        if (events.isEmpty)
+        if (filteredEvents.isEmpty)
           const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
-            child: Text(
-              'No events found in this category.',
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text('No events found in this category.'),
           )
         else
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
 
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
 
-            itemCount: events.length,
+            itemCount: filteredEvents.length,
 
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, index) {
               return const SizedBox(height: 14);
             },
 
             itemBuilder: (context, index) {
-              final event = events[index];
+              final event = filteredEvents[index];
 
               return EventCard(
-                title: event['title'],
-                organizer: event['organizer'],
-                date: event['date'],
-                time: event['time'],
-                location: event['location'],
-                isOnline: event['isOnline'],
+                event: event,
+                isSaved: _savedEvents[event.id] ?? false,
+                isBookmarkLoading: _bookmarkLoading[event.id] ?? false,
+                onBookmarkPressed: () {
+                  _toggleBookmark(event);
+                },
               );
             },
           ),
@@ -265,14 +394,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTrendingEvents() {
+  Widget _buildTrendingEvents(List<EventModel> events) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          title: 'Trending Now 🔥',
-          showViewAll: true,
-        ),
+        const SectionHeader(title: 'Trending Now 🔥', showViewAll: true),
 
         const SizedBox(height: 14),
 
@@ -280,33 +406,27 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 190,
 
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
 
             scrollDirection: Axis.horizontal,
 
-            itemCount: _events.length,
+            itemCount: events.length,
 
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, index) {
               return const SizedBox(width: 14);
             },
 
             itemBuilder: (context, index) {
-              final event = _events[index];
+              final event = events[index];
 
-              return SizedBox(
-                width: 280,
-
-                child: EventCard(
-                  title: event['title'],
-                  organizer: event['organizer'],
-                  date: event['date'],
-                  time: event['time'],
-                  location: event['location'],
-                  isOnline: event['isOnline'],
-                ),
-              );
+              return SizedBox(width: 280, child: EventCard(
+                event: event,
+                isSaved: _savedEvents[event.id] ?? false,
+                isBookmarkLoading: _bookmarkLoading[event.id] ?? false,
+                onBookmarkPressed: () {
+                  _toggleBookmark(event);
+                },
+              ));
             },
           ),
         ),
@@ -319,47 +439,47 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedIndex: 0,
 
       onDestinationSelected: (index) {
-        // Navigation will be connected in a later step.
+        switch (index) {
+          case 0:
+            context.go(AppRoutes.home);
+            break;
+
+          case 1:
+            context.go(AppRoutes.explore);
+            break;
+
+          case 2:
+            context.go(AppRoutes.savedEvents);
+            break;
+
+          case 3:
+            context.go(AppRoutes.profile);
+            break;
+        }
       },
 
       destinations: const [
         NavigationDestination(
-          icon: Icon(
-            Icons.home_outlined,
-          ),
-          selectedIcon: Icon(
-            Icons.home_rounded,
-          ),
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home_rounded),
           label: 'Home',
         ),
 
         NavigationDestination(
-          icon: Icon(
-            Icons.explore_outlined,
-          ),
-          selectedIcon: Icon(
-            Icons.explore_rounded,
-          ),
+          icon: Icon(Icons.explore_outlined),
+          selectedIcon: Icon(Icons.explore_rounded),
           label: 'Explore',
         ),
 
         NavigationDestination(
-          icon: Icon(
-            Icons.bookmark_outline_rounded,
-          ),
-          selectedIcon: Icon(
-            Icons.bookmark_rounded,
-          ),
+          icon: Icon(Icons.bookmark_outline_rounded),
+          selectedIcon: Icon(Icons.bookmark_rounded),
           label: 'Saved',
         ),
 
         NavigationDestination(
-          icon: Icon(
-            Icons.person_outline_rounded,
-          ),
-          selectedIcon: Icon(
-            Icons.person_rounded,
-          ),
+          icon: Icon(Icons.person_outline_rounded),
+          selectedIcon: Icon(Icons.person_rounded),
           label: 'Profile',
         ),
       ],

@@ -7,16 +7,10 @@ import '../../../events/domain/models/event_model.dart';
 
 class EventCard extends StatelessWidget {
   final EventModel event;
-  final bool isSaved;
-  final bool isBookmarkLoading;
-  final VoidCallback onBookmarkPressed;
 
   const EventCard({
     super.key,
     required this.event,
-    required this.isSaved,
-    required this.isBookmarkLoading,
-    required this.onBookmarkPressed
   });
 
   @override
@@ -25,7 +19,10 @@ class EventCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(18),
 
       onTap: () {
-        context.push(AppRoutes.eventDetails, extra: event);
+        context.push(
+          AppRoutes.eventDetails,
+          extra: event,
+        );
       },
 
       child: Container(
@@ -34,13 +31,17 @@ class EventCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
 
-          borderRadius: BorderRadius.circular(18),
+          borderRadius:
+              BorderRadius.circular(18),
 
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(
+            color: Colors.grey.shade200,
+          ),
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black
+                  .withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -55,17 +56,20 @@ class EventCard extends StatelessWidget {
 
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
 
                 children: [
                   Text(
                     event.title,
                     maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    overflow:
+                        TextOverflow.ellipsis,
 
                     style: const TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontWeight:
+                          FontWeight.w700,
                     ),
                   ),
 
@@ -74,9 +78,14 @@ class EventCard extends StatelessWidget {
                   Text(
                     event.organizerName,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    overflow:
+                        TextOverflow.ellipsis,
 
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color:
+                          Colors.grey.shade600,
+                    ),
                   ),
 
                   const SizedBox(height: 10),
@@ -86,7 +95,8 @@ class EventCard extends StatelessWidget {
                       Icon(
                         Icons.access_time_rounded,
                         size: 14,
-                        color: Colors.grey.shade600,
+                        color:
+                            Colors.grey.shade600,
                       ),
 
                       const SizedBox(width: 4),
@@ -95,7 +105,8 @@ class EventCard extends StatelessWidget {
                         event.time,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade600,
+                          color:
+                              Colors.grey.shade600,
                         ),
                       ),
 
@@ -103,10 +114,13 @@ class EventCard extends StatelessWidget {
 
                       Icon(
                         event.isOnline
-                            ? Icons.language_rounded
-                            : Icons.location_on_outlined,
+                            ? Icons
+                                .language_rounded
+                            : Icons
+                                .location_on_outlined,
                         size: 14,
-                        color: AppTheme.primaryOrange,
+                        color:
+                            AppTheme.primaryOrange,
                       ),
 
                       const SizedBox(width: 4),
@@ -115,11 +129,13 @@ class EventCard extends StatelessWidget {
                         child: Text(
                           event.location,
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          overflow:
+                              TextOverflow.ellipsis,
 
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
+                            color:
+                                Colors.grey.shade600,
                           ),
                         ),
                       ),
@@ -130,22 +146,13 @@ class EventCard extends StatelessWidget {
             ),
 
             IconButton(
-              onPressed: isBookmarkLoading ? null : onBookmarkPressed,
+              onPressed: () {},
 
-              icon: isBookmarkLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Icon(
-                      isSaved
-                          ? Icons.bookmark_rounded
-                          : Icons.bookmark_border_rounded,
-                    ),
+              icon: const Icon(
+                Icons.bookmark_border_rounded,
+                color:
+                    AppTheme.primaryOrange,
+              ),
             ),
           ],
         ),
@@ -160,11 +167,13 @@ class EventCard extends StatelessWidget {
 
       decoration: BoxDecoration(
         color: AppTheme.lightOrange,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius:
+            BorderRadius.circular(14),
       ),
 
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment:
+            MainAxisAlignment.center,
 
         children: [
           const Icon(
@@ -180,7 +189,8 @@ class EventCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w800,
-              color: AppTheme.primaryOrange,
+              color:
+                  AppTheme.primaryOrange,
             ),
           ),
         ],

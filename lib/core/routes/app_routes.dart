@@ -7,6 +7,9 @@ import '../../features/authentication/presentation/screens/register_screen.dart'
 import '../../features/authentication/presentation/screens/forgot_password_screen.dart';
 import '../../features/authentication/presentation/screens/auth_gate.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/events/presentation/screens/event_details_screen.dart';
+import '../../features/events/domain/models/event_model.dart';
+import '../../features/bookmarks/presentation/screens/saved_events_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -15,7 +18,10 @@ class AppRoutes {
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String home = '/home';
+  static const String explore = "/explore";
   static const String profile = '/profile';
+  static const String eventDetails = '/event-details';
+  static const String savedEvents = '/saved-events';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -69,13 +75,37 @@ class AppRoutes {
             body: Center(
               child: Text(
                 'Profile Screen',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           );
+        },
+      ),
+      GoRoute(
+        path: eventDetails,
+        builder: (context, state) {
+          final event = state.extra as EventModel;
+
+          return EventDetailsScreen(event: event);
+        },
+      ),
+      GoRoute(
+        path: explore,
+        builder: (context, state) {
+          return const Scaffold(
+            body: Center(
+              child: Text(
+                "Explore",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: savedEvents,
+        builder: (context, state) {
+          return const SavedEventsScreen();
         },
       ),
     ],
