@@ -6,7 +6,7 @@ class EventModel {
   final String description;
   final String category;
   final String domain;
-  final String organizer;
+  final String organizerId;
   final String organizerName;
   final DateTime date;
   final String time;
@@ -24,7 +24,7 @@ class EventModel {
     required this.description,
     required this.category,
     required this.domain,
-    required this.organizer,
+    required this.organizerId,
     required this.organizerName,
     required this.date,
     required this.time,
@@ -52,7 +52,7 @@ class EventModel {
       description: data['description'] ?? '',
       category: data['category'] ?? '',
       domain: data['domain'] ?? '',
-      organizer: data['organizer'] ?? '',
+      organizerId: data['organizerId'] ?? '',
       organizerName: data['organizerName'] ?? '',
       date: _toDateTime(data['date']),
       time: data['time'] ?? '',
@@ -77,7 +77,7 @@ class EventModel {
       'description': description,
       'category': category,
       'domain': domain,
-      'organizerId': organizer,
+      'organizerId': organizerId,
       'organizerName': organizerName,
       'date': Timestamp.fromDate(date),
       'time': time,

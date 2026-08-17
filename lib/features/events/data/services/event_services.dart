@@ -45,4 +45,18 @@ class EventService {
       query,
     );
   }
+
+  Future<List<EventModel>> filterEvents({
+    String? domain,
+    DateTime? date,
+    bool? isOnline,
+    String? level,
+  }) {
+    return EventRepository.instance.filterEvents(
+      domain: domain,
+      date: date,
+      isOnline: isOnline,
+      level: level,
+    );
+  }
 }
