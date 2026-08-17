@@ -10,6 +10,7 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/events/presentation/screens/event_details_screen.dart';
 import '../../features/events/domain/models/event_model.dart';
 import '../../features/bookmarks/presentation/screens/saved_events_screen.dart';
+import '../../features/search/presentation/screens/search_events_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String eventDetails = '/event-details';
   static const String savedEvents = '/saved-events';
+  static const String search = '/search';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -106,6 +108,12 @@ class AppRoutes {
         path: savedEvents,
         builder: (context, state) {
           return const SavedEventsScreen();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.search,
+        builder: (context, state) {
+          return const SearchEventsScreen();
         },
       ),
     ],

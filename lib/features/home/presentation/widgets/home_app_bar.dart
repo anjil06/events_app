@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
 
-class HomeAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
 
   @override
@@ -42,6 +41,12 @@ class HomeAppBar extends StatelessWidget
       ),
 
       actions: [
+        IconButton(
+          onPressed: () {
+            context.push(AppRoutes.search);
+          },
+          icon: const Icon(Icons.search_rounded),
+        ),
         IconButton(
           onPressed: () {
             context.push(AppRoutes.profile);

@@ -37,4 +37,12 @@ class EventService {
   ) {
     return _repository.deleteEvent(eventId);
   }
+
+  Future<List<EventModel>> searchEvents(
+    String query,
+  ) {
+    return _repository.searchEvents(
+      query,
+    );
+  }
 }

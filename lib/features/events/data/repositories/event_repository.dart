@@ -15,7 +15,47 @@ class EventRepository {
       get _eventsCollection {
     return _firestore.collection('events');
   }
+  Future<List<EventModel>> searchEvents(
+    String query,
+  ) async {
+    final snapshot = await FirebaseFirestore
+        .instance
+        .collection('events')
+        .get();
 
+    final searchQuery =
+        query.trim().toLowerCase();
+
+    if (searchQuery.isEmpty) {
+      return [];
+    }
+
+    return snapshot.docs
+        .map(
+          EventModel.fromFirestore,
+        )
+        .where(
+          (event) {
+            final title =
+                event.title.toLowerCase();
+
+            final category =
+                event.category.toLowerCase();
+
+            final location =
+                event.location.toLowerCase();
+
+            final organizer =
+                event.organizer.toLowerCase();
+
+            return title.contains(searchQuery) ||
+                category.contains(searchQuery) ||
+                location.contains(searchQuery) ||
+                organizer.contains(searchQuery);
+          },
+        )
+        .toList();
+  }
   Stream<List<EventModel>> getEvents() {
     return _eventsCollection
         .orderBy('date')
