@@ -700,6 +700,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
         eventId: widget.event.id,
         eventTitle: widget.event.title,
         userEmail: user.email ?? '',
+        userName: user.displayName ?? '',
         registeredAt: DateTime.now(),
         status: 'registered',
       );

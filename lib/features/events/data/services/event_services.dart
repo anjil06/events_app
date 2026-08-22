@@ -14,6 +14,10 @@ class EventService {
     return _repository.getEvents();
   }
 
+  Stream<List<EventModel>> getEventsByOrganizer(String organizerId) {
+    return _repository.getEventsByOrganizer(organizerId);
+  }
+
   Future<EventModel?> getEventById(
     String eventId,
   ) {

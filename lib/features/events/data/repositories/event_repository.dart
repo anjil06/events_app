@@ -94,6 +94,17 @@ class EventRepository {
     });
   }
 
+  Stream<List<EventModel>> getEventsByOrganizer(String organizerId) {
+    return _eventsCollection
+        .where('organizerId', isEqualTo: organizerId)
+        .snapshots()
+        .map((snapshot) {
+      final events = snapshot.docs.map(EventModel.fromFirestore).toList();
+      events.sort((first, second) => first.date.compareTo(second.date));
+      return events;
+    });
+  }
+
   Future<EventModel?> getEventById(String eventId) async {
     final document = await _eventsCollection.doc(eventId).get();
 

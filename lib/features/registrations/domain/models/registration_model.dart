@@ -6,6 +6,7 @@ class RegistrationModel {
   final String eventId;
   final String eventTitle;
   final String userEmail;
+  final String userName;
   final DateTime registeredAt;
   final String status;
 
@@ -15,6 +16,7 @@ class RegistrationModel {
     required this.eventId,
     required this.eventTitle,
     required this.userEmail,
+    required this.userName,
     required this.registeredAt,
     required this.status,
   });
@@ -36,6 +38,7 @@ class RegistrationModel {
       eventId: data['eventId'] ?? '',
       eventTitle: data['eventTitle'] ?? '',
       userEmail: data['userEmail'] ?? '',
+      userName: data['userName'] ?? '',
       registeredAt: _parseDate(
         data['registeredAt'],
       ),
@@ -49,6 +52,7 @@ class RegistrationModel {
       'eventId': eventId,
       'eventTitle': eventTitle,
       'userEmail': userEmail,
+      'userName': userName,
       'registeredAt':
           FieldValue.serverTimestamp(),
       'status': status,

@@ -36,4 +36,8 @@ class RegistrationService {
       userId,
     );
   }
+
+  Stream<List<RegistrationModel>> getEventRegistrations(String eventId) {
+    return _repository.getEventRegistrations(eventId);
+  }
 }

@@ -12,6 +12,11 @@ import '../../features/events/domain/models/event_model.dart';
 import '../../features/bookmarks/presentation/screens/saved_events_screen.dart';
 import '../../features/search/presentation/screens/search_events_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/explore/presentation/screens/explore_events_screen.dart';
+import '../../features/registrations/presentation/screens/registered_events_screen.dart';
+import '../../features/organizer/presentation/screens/manage_events_screen.dart';
+import '../../features/organizer/presentation/screens/event_form_screen.dart';
+import '../../features/organizer/presentation/screens/event_registrations_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -25,6 +30,10 @@ class AppRoutes {
   static const String eventDetails = '/event-details';
   static const String savedEvents = '/saved-events';
   static const String search = '/search';
+  static const String registeredEvents = '/registered-events';
+  static const String manageEvents = '/manage-events';
+  static const String eventForm = '/event-form';
+  static const String eventRegistrations = '/event-registrations';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -88,14 +97,7 @@ class AppRoutes {
       GoRoute(
         path: explore,
         builder: (context, state) {
-          return const Scaffold(
-            body: Center(
-              child: Text(
-                "Explore",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
+          return const ExploreEventsScreen();
         },
       ),
       GoRoute(
@@ -103,6 +105,24 @@ class AppRoutes {
         builder: (context, state) {
           return const SavedEventsScreen();
         },
+      ),
+      GoRoute(
+        path: registeredEvents,
+        builder: (context, state) {
+          return const RegisteredEventsScreen();
+        },
+      ),
+      GoRoute(
+        path: manageEvents,
+        builder: (context, state) => const ManageEventsScreen(),
+      ),
+      GoRoute(
+        path: eventForm,
+        builder: (context, state) => EventFormScreen(event: state.extra as EventModel?),
+      ),
+      GoRoute(
+        path: eventRegistrations,
+        builder: (context, state) => EventRegistrationsScreen(event: state.extra! as EventModel),
       ),
       GoRoute(
         path: AppRoutes.search,

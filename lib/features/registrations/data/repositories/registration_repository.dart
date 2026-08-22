@@ -55,20 +55,35 @@ class RegistrationRepository {
           'userId',
           isEqualTo: userId,
         )
-        .orderBy(
-          'registeredAt',
-          descending: true,
-        )
         .snapshots()
         .map(
           (snapshot) {
-            return snapshot.docs
+            final registrations = snapshot.docs
                 .map(
                   RegistrationModel
                       .fromFirestore,
                 )
                 .toList();
+            registrations.sort(
+              (first, second) =>
+                  second.registeredAt.compareTo(first.registeredAt),
+            );
+            return registrations;
           },
         );
+  }
+
+  Stream<List<RegistrationModel>> getEventRegistrations(String eventId) {
+    return _registrationsCollection
+        .where('eventId', isEqualTo: eventId)
+        .snapshots()
+        .map((snapshot) {
+      final registrations =
+          snapshot.docs.map(RegistrationModel.fromFirestore).toList();
+      registrations.sort(
+        (first, second) => second.registeredAt.compareTo(first.registeredAt),
+      );
+      return registrations;
+    });
   }
 }

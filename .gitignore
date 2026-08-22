@@ -43,3 +43,43 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android local configuration and release-signing credentials
+/android/local.properties
+/android/key.properties
+*.jks
+*.keystore
+*.p12
+*.pem
+
+# iOS/macOS local build configuration and signing artifacts
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/ephemeral/
+/macos/Flutter/ephemeral/
+*.mobileprovision
+
+# Local environment files and credentials
+.env
+.env.*
+!.env.example
+serviceAccountKey.json
+firebase-adminsdk-*.json
+
+# Firebase CLI local state and logs
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Editor and test artifacts
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+test-results/
+*.lcov
+
+# Keep these tracked: they are client configuration, not private keys.
+# android/app/google-services.json
+# ios/Runner/GoogleService-Info.plist
+# lib/firebase_options.dart
