@@ -11,6 +11,7 @@ import '../../features/events/presentation/screens/event_details_screen.dart';
 import '../../features/events/domain/models/event_model.dart';
 import '../../features/bookmarks/presentation/screens/saved_events_screen.dart';
 import '../../features/search/presentation/screens/search_events_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -73,14 +74,7 @@ class AppRoutes {
       GoRoute(
         path: profile,
         builder: (context, state) {
-          return const Scaffold(
-            body: Center(
-              child: Text(
-                'Profile Screen',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
+          return const ProfileScreen();
         },
       ),
       GoRoute(
