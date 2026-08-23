@@ -7,8 +7,17 @@ import '../../../events/domain/models/event_model.dart';
 
 class FeaturedEventCard extends StatelessWidget {
   final EventModel event;
+  final bool isSaved;
+  final bool isBookmarkLoading;
+  final VoidCallback onBookmarkPressed;
 
-  const FeaturedEventCard({super.key, required this.event});
+  const FeaturedEventCard({
+    super.key,
+    required this.event,
+    required this.isBookmarkLoading,
+    required this.isSaved,
+    required this.onBookmarkPressed
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +78,19 @@ class FeaturedEventCard extends StatelessWidget {
                   ),
                 ),
 
-                const Icon(Icons.bookmark_border_rounded, color: Colors.white),
+                IconButton(
+                  onPressed: isBookmarkLoading
+                      ? null
+                      : onBookmarkPressed,
+                  icon: Icon(
+                    isSaved
+                        ? Icons.bookmark_rounded
+                        : Icons.bookmark_border_rounded,
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                )
               ],
             ),
 

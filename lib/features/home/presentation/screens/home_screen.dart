@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategory = 0;
   final Map<String, bool> _savedEvents = {};
   final Map<String, bool> _bookmarkLoading = {};
+  bool _savedEventsLoaded = false;
 
   final List<String> _categories = [
     'All',
@@ -47,33 +48,16 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
     }
-
-  Future<void> _toggleBookmark(EventModel event) async {
+  Future<void> _loadSavedEvents(List<EventModel> events) async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null) {
-      _showMessage('Please login to save events.');
-      return;
-    }
+    if (user == null) return;
 
-    if (event.id.isEmpty) {
-      _showMessage('Unable to save this event.');
-      return;
-    }
+    for (final event in events) {
+      if (event.id.isEmpty) continue;
 
-    setState(() {
-      _bookmarkLoading[event.id] = true;
-    });
-
-    try {
-      final existingBookmark = await BookmarkService.instance.getBookmark(
-        userId: user.uid,
-        eventId: event.id,
-      );
-
-      if (existingBookmark != null) {
-        // Remove bookmark
-        await BookmarkService.instance.removeBookmark(
+      try {
+        final isSaved = await BookmarkService.instance.isBookmarked(
           userId: user.uid,
           eventId: event.id,
         );
@@ -81,13 +65,40 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!mounted) return;
 
         setState(() {
-          _savedEvents[event.id] = false;
-          _bookmarkLoading[event.id] = false;
+          _savedEvents[event.id] = isSaved;
         });
+      } catch (e) {
+        debugPrint('LOAD BOOKMARK ERROR: $e');
+      }
+    }
+  }
 
-        _showMessage('Removed from saved events.');
+  Future<void> _toggleBookmark(EventModel event) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null || event.id.isEmpty) {
+      return;
+    }
+
+    if (_bookmarkLoading[event.id] == true) {
+      return;
+    }
+
+    final oldValue = _savedEvents[event.id] ?? false;
+
+    // Immediately update UI.
+    setState(() {
+      _savedEvents[event.id] = !oldValue;
+      _bookmarkLoading[event.id] = true;
+    });
+
+    try {
+      if (oldValue) {
+        await BookmarkService.instance.removeBookmark(
+          userId: user.uid,
+          eventId: event.id,
+        );
       } else {
-        // Add bookmark
         final bookmark = BookmarkModel(
           id: '',
           userId: user.uid,
@@ -97,26 +108,22 @@ class _HomeScreenState extends State<HomeScreen> {
         );
 
         await BookmarkService.instance.addBookmark(bookmark);
-
-        if (!mounted) return;
-
-        setState(() {
-          _savedEvents[event.id] = true;
-          _bookmarkLoading[event.id] = false;
-        });
-
-        _showMessage('Event saved successfully! 🔖');
       }
     } catch (e) {
       debugPrint('BOOKMARK ERROR: $e');
 
+      // Firebase failed → restore previous state.
+      if (!mounted) return;
+
+      setState(() {
+        _savedEvents[event.id] = oldValue;
+      });
+    } finally {
       if (!mounted) return;
 
       setState(() {
         _bookmarkLoading[event.id] = false;
       });
-
-      _showMessage('Unable to update saved event.');
     }
   }
 
@@ -227,6 +234,11 @@ class _HomeScreenState extends State<HomeScreen> {
               return _buildEmptyState();
             }
 
+            if (_savedEvents.isEmpty){
+              _loadSavedEvents(events);
+              _savedEventsLoaded = true;
+            }
+
             return RefreshIndicator(
               color: AppTheme.primaryOrange,
 
@@ -275,28 +287,20 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(title: 'Explore Categories'),
-
         const SizedBox(height: 14),
-
         SizedBox(
           height: 42,
-
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-
             scrollDirection: Axis.horizontal,
-
             itemCount: _categories.length,
-
             separatorBuilder: (_, index) {
               return const SizedBox(width: 10);
             },
-
             itemBuilder: (context, index) {
               return CategoryChip(
                 label: _categories[index],
                 selected: _selectedCategory == index,
-
                 onSelected: () {
                   setState(() {
                     _selectedCategory = index;
@@ -335,7 +339,14 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final event = events[index];
 
-              return FeaturedEventCard(event: event);
+              return FeaturedEventCard(
+                event: event,
+                isSaved: _savedEvents[event.id] ?? false,
+                isBookmarkLoading: _bookmarkLoading[event.id] ?? false,
+                onBookmarkPressed: (){
+                  _toggleBookmark(event);
+                },
+              );
             },
           ),
         ),
