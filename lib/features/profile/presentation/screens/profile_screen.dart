@@ -52,7 +52,7 @@ const SizedBox(height: 20),
           ],
         ),
       ),
-bottomNavigationBar: TechScopeBottomNavBar(currentIndex: 3),
+bottomNavigationBar: MainNavigationScreen(),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 
 import '../../features/authentication/presentation/screens/login_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
@@ -74,9 +75,26 @@ class AppRoutes {
       ),
 
       GoRoute(
-        path: home,
-        builder: (context, state) {
-          return const HomeScreen();
+        path: AppRoutes.home,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const HomeScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child,) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeInOut,
+                  ),
+                ),
+                child: child,
+              );
+            },
+          );
         },
       ),
       GoRoute(
@@ -94,9 +112,22 @@ class AppRoutes {
         },
       ),
       GoRoute(
-        path: explore,
-        builder: (context, state) {
-          return const ExploreEventsScreen();
+        path: AppRoutes.explore,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const ExploreEventsScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child,) {
+              return SlideTransition(
+                position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero,).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeInOut,
+                  ),
+                ),
+                child: child,
+              );
+            },
+          );
         },
       ),
       GoRoute(
