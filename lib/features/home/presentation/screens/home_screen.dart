@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:techscope/features/home/presentation/widgets/bottom_navigation_bar.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/category_chip.dart';
@@ -278,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: const MainNavigationScreen(),
     );
   }
 

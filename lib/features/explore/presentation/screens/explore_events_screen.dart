@@ -167,9 +167,7 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
         },
       ),
 
-      bottomNavigationBar: const TechScopeBottomNavBar(
-        currentIndex: 1,
-      ),
+      bottomNavigationBar: const MainNavigationScreen()
     );
   }
 }

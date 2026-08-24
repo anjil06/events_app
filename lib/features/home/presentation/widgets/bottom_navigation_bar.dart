@@ -1,67 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/routes/app_routes.dart';
+import 'package:techscope/features/explore/presentation/screens/explore_events_screen.dart';
 
-class TechScopeBottomNavBar extends StatelessWidget {
-  final int currentIndex;
-  //final ValueChanged<int> onItemSelected;
+import '../../../home/presentation/screens/home_screen.dart';
+import '../../../bookmarks/presentation/screens/saved_events_screen.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 
-  const TechScopeBottomNavBar({
-    super.key,
-    required this.currentIndex,
-    //required this.onItemSelected,
-  });
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
+
+  @override
+  State<MainNavigationScreen> createState() =>
+      _MainNavigationScreenState();
+}
+
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  final PageController _pageController = PageController();
+
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    ExploreEventsScreen(),
+    SavedEventsScreen(),
+    ProfileScreen(),
+  ];
+
+  void _changePage(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: currentIndex,
+    return Scaffold(
+      body: PageView(
+        controller: _pageController,
 
-      onDestinationSelected: (index) {
-        switch (index) {
-          case 0:
-            context.go(AppRoutes.home);
-            break;
+        // This enables horizontal swiping.
+        physics: const PageScrollPhysics(),
 
-          case 1:
-            context.go(AppRoutes.explore);
-            break;
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
 
-          case 2:
-            context.go(AppRoutes.savedEvents);
-            break;
+        children: _screens,
+      ),
 
-          case 3:
-            context.go(AppRoutes.profile);
-            break;
-        }
-      },
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
 
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home_rounded),
-          label: 'Home',
-        ),
+        onDestinationSelected: _changePage,
 
-        NavigationDestination(
-          icon: Icon(Icons.explore_outlined),
-          selectedIcon: Icon(Icons.explore_rounded),
-          label: 'Explore',
-        ),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
 
-        NavigationDestination(
-          icon: Icon(Icons.bookmark_border_rounded),
-          selectedIcon: Icon(Icons.bookmark_rounded),
-          label: 'Saved',
-        ),
+          NavigationDestination(
+            icon: Icon(Icons.explore_outlined),
+            selectedIcon: Icon(Icons.explore_rounded),
+            label: 'Explore',
+          ),
 
-        NavigationDestination(
-          icon: Icon(Icons.person_outline_rounded),
-          selectedIcon: Icon(Icons.person_rounded),
-          label: 'Profile',
-        ),
-      ],
+          NavigationDestination(
+            icon: Icon(Icons.bookmark_border_rounded),
+            selectedIcon: Icon(Icons.bookmark_rounded),
+            label: 'Saved',
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.person_outline_rounded),
+            selectedIcon: Icon(Icons.person_rounded),
+            label: 'Profile',
+          ),
+        ],
+      ),
     );
   }
 }
