@@ -14,7 +14,7 @@ Future<void> main() async {
 
   runApp(
     const ProviderScope(
-      child: TechScopeApp(),
+      child: TechCultureApp(),
     ),
   );
 }

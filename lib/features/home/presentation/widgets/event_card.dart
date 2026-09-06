@@ -11,115 +11,118 @@ class EventCard extends StatelessWidget {
   final bool isBookmarkLoading;
   final VoidCallback onBookmarkPressed;
 
-  const EventCard({
+const EventCard({
     super.key,
-    required this.event,
-    required this.isSaved,
-    required this.isBookmarkLoading,
-    required this.onBookmarkPressed
-  });
+ required this.event,
+ required this.isSaved,
+ required this.isBookmarkLoading,
+ required this.onBookmarkPressed
+});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(18),
 
-      onTap: () {
+onTap: () {
         context.push(AppRoutes.eventDetails, extra: event);
       },
 
-      child: Container(
+child: Container(
         padding: const EdgeInsets.all(14),
 
-        decoration: BoxDecoration(
+decoration: BoxDecoration(
           color: Colors.white,
 
-          borderRadius: BorderRadius.circular(18),
+borderRadius: BorderRadius.circular(18),
 
-          border: Border.all(color: Colors.grey.shade200),
+border: Border.all(color: Colors.grey.shade200),
 
-          boxShadow: [
+boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+blurRadius: 10,
+offset: const Offset(0, 4),
             ),
           ],
         ),
 
-        child: Row(
+child: Row(
           children: [
             _buildDateContainer(),
 
-            const SizedBox(width: 14),
+const SizedBox(width: 12),
 
-            Expanded(
+Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
+mainAxisSize: MainAxisSize.min,
+children: [
                   Text(
                     event.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+maxLines: 2,
+overflow: TextOverflow.ellipsis,
+style: const TextStyle(
+                      fontSize: 15,
+fontWeight: FontWeight.w700,
                     ),
                   ),
 
-                  const SizedBox(height: 5),
+const SizedBox(height: 4),
 
-                  Text(
+Text(
                     event.organizerName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
 
-                  const SizedBox(height: 10),
+const SizedBox(height: 8),
 
-                  Row(
+Row(
                     children: [
                       Icon(
                         Icons.access_time_rounded,
-                        size: 14,
-                        color: Colors.grey.shade600,
+size: 13,
+color: Colors.grey.shade600,
                       ),
 
-                      const SizedBox(width: 4),
+const SizedBox(width: 4),
 
-                      Text(
-                        event.time,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
+Expanded(
+                        flex: 5,
+child: Text(
+                          event.time,
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: TextStyle(
+                            fontSize: 11,
+color: Colors.grey.shade600,
+                          ),
                         ),
                       ),
 
-                      const SizedBox(width: 10),
+const SizedBox(width: 8),
 
-                      Icon(
+Icon(
                         event.isOnline
-                            ? Icons.language_rounded
-                            : Icons.location_on_outlined,
-                        size: 14,
-                        color: AppTheme.primaryOrange,
+? Icons.language_rounded
+: Icons.location_on_outlined,
+size: 13,
+color: AppTheme.primaryOrange,
                       ),
 
-                      const SizedBox(width: 4),
+const SizedBox(width: 4),
 
-                      Expanded(
-                        child: Text(
+Expanded(
+                        flex: 6,
+child: Text(
                           event.location,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: TextStyle(
+                            fontSize: 11,
+color: Colors.grey.shade600,
                           ),
                         ),
                       ),
@@ -129,22 +132,27 @@ class EventCard extends StatelessWidget {
               ),
             ),
 
-            IconButton(
-              onPressed: isBookmarkLoading ? null : onBookmarkPressed,
+const SizedBox(width: 4),
 
-              icon: isBookmarkLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
+IconButton(
+              padding: EdgeInsets.zero,
+constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+onPressed: isBookmarkLoading ? null : onBookmarkPressed,
+icon: isBookmarkLoading
+? const SizedBox(
+                      height: 18,
+width: 18,
+child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+color: AppTheme.primaryOrange,
                       ),
                     )
-                  : Icon(
+: Icon(
                       isSaved
-                          ? Icons.bookmark_rounded
-                          : Icons.bookmark_border_rounded,
+? Icons.bookmark_rounded
+: Icons.bookmark_border_rounded,
+color: isSaved ? AppTheme.primaryOrange : Colors.grey.shade600,
+size: 22,
                     ),
             ),
           ],
@@ -156,31 +164,31 @@ class EventCard extends StatelessWidget {
   Widget _buildDateContainer() {
     return Container(
       height: 68,
-      width: 58,
+width: 58,
 
-      decoration: BoxDecoration(
+decoration: BoxDecoration(
         color: AppTheme.lightOrange,
-        borderRadius: BorderRadius.circular(14),
+borderRadius: BorderRadius.circular(14),
       ),
 
-      child: Column(
+child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
 
-        children: [
+children: [
           const Icon(
             Icons.calendar_month_rounded,
-            color: AppTheme.primaryOrange,
-            size: 20,
+color: AppTheme.primaryOrange,
+size: 20,
           ),
 
-          const SizedBox(height: 4),
+const SizedBox(height: 4),
 
-          Text(
+Text(
             '${event.date.day}',
-            style: const TextStyle(
+style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: AppTheme.primaryOrange,
+fontWeight: FontWeight.w800,
+color: AppTheme.primaryOrange,
             ),
           ),
         ],

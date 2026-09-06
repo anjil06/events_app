@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../domain/models/event_model.dart';
+import '../mock/techculture_data.dart';
 
 class EventRepository {
   EventRepository._();
 
-  static final EventRepository instance = EventRepository._();
+static final EventRepository instance = EventRepository._();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -14,74 +15,83 @@ class EventRepository {
   }
 
   Future<List<EventModel>> filterEvents({
-  String? domain,
-  DateTime? date,
-  bool? isOnline,
-  String? level,
-}) async {
-  final snapshot = await _eventsCollection.get();
+    String? domain,
+ DateTime? date,
+ bool? isOnline,
+ String? level,
+  }) async {
+    List<EventModel> allEvents = [];
+    try {
+      final snapshot = await _eventsCollection.get();
+      allEvents = snapshot.docs.map(EventModel.fromFirestore).toList();
+    } catch (_) {}
 
-  return snapshot.docs
-      .map(EventModel.fromFirestore)
-      .where((event) {
-    if (domain != null &&
-        domain.isNotEmpty &&
-        event.domain.toLowerCase() !=
-            domain.toLowerCase()) {
-      return false;
+if (allEvents.isEmpty) {
+      allEvents = TechCultureData.defaultEvents;
     }
 
-    if (date != null) {
-      final sameDate =
-          event.date.year == date.year &&
-          event.date.month == date.month &&
-          event.date.day == date.day;
-
-      if (!sameDate) {
+    return allEvents.where((event) {
+if (domain != null &&
+          domain.isNotEmpty &&
+          event.domain.toLowerCase() != domain.toLowerCase()) {
         return false;
       }
-    }
 
-    if (isOnline != null &&
-        event.isOnline != isOnline) {
-      return false;
-    }
+if (date != null) {
+        final sameDate =
+            event.date.year == date.year &&
+            event.date.month == date.month &&
+            event.date.day == date.day;
 
-    if (level != null &&
-        level.isNotEmpty &&
-        event.level.toLowerCase() !=
-            level.toLowerCase()) {
-      return false;
-    }
+if (!sameDate) {
+          return false;
+        }
+      }
 
-    return true;
-  }).toList();
-}
+if (isOnline != null && event.isOnline != isOnline) {
+        return false;
+      }
+
+if (level != null &&
+          level.isNotEmpty &&
+          event.level.toLowerCase() != level.toLowerCase()) {
+        return false;
+      }
+
+      return true;
+    }).toList();
+  }
 
   Future<List<EventModel>> searchEvents(String query) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('events')
-        .get();
-
     final searchQuery = query.trim().toLowerCase();
 
-    if (searchQuery.isEmpty) {
+if (searchQuery.isEmpty) {
       return [];
     }
 
-    return snapshot.docs.map(EventModel.fromFirestore).where((event) {
+    List<EventModel> allEvents = [];
+    try {
+      final snapshot = await FirebaseFirestore.instance
+.collection('events')
+.get();
+      allEvents = snapshot.docs.map(EventModel.fromFirestore).toList();
+    } catch (_) {}
+
+if (allEvents.isEmpty) {
+      allEvents = TechCultureData.defaultEvents;
+    }
+
+    return allEvents.where((event) {
       final title = event.title.toLowerCase();
-
       final category = event.category.toLowerCase();
-
+      final domain = event.domain.toLowerCase();
       final location = event.location.toLowerCase();
-
       final organizer = event.organizerId.toLowerCase();
-
       final organizerName = event.organizerName.toLowerCase();
 
       return title.contains(searchQuery) ||
           category.contains(searchQuery) ||
+          domain.contains(searchQuery) ||
           location.contains(searchQuery) ||
           organizer.contains(searchQuery) ||
           organizerName.contains(searchQuery);
@@ -90,15 +100,21 @@ class EventRepository {
 
   Stream<List<EventModel>> getEvents() {
     return _eventsCollection.orderBy('date').snapshots().map((snapshot) {
-      return snapshot.docs.map(EventModel.fromFirestore).toList();
+      final events = snapshot.docs.map(EventModel.fromFirestore).toList();
+if (events.isEmpty) {
+        return TechCultureData.defaultEvents;
+      }
+      return events;
+    }).handleError((_) {
+      return TechCultureData.defaultEvents;
     });
   }
 
   Stream<List<EventModel>> getEventsByOrganizer(String organizerId) {
     return _eventsCollection
-        .where('organizerId', isEqualTo: organizerId)
-        .snapshots()
-        .map((snapshot) {
+.where('organizerId', isEqualTo: organizerId)
+.snapshots()
+.map((snapshot) {
       final events = snapshot.docs.map(EventModel.fromFirestore).toList();
       events.sort((first, second) => first.date.compareTo(second.date));
       return events;
@@ -106,13 +122,21 @@ class EventRepository {
   }
 
   Future<EventModel?> getEventById(String eventId) async {
-    final document = await _eventsCollection.doc(eventId).get();
-
-    if (!document.exists) {
-      return null;
+    final mockMatch = TechCultureData.defaultEvents
+.where((e) => e.id == eventId)
+.firstOrNull;
+if (mockMatch != null) {
+      return mockMatch;
     }
 
-    return EventModel.fromFirestore(document);
+    try {
+      final document = await _eventsCollection.doc(eventId).get();
+if (document.exists) {
+        return EventModel.fromFirestore(document);
+      }
+    } catch (_) {}
+
+    return null;
   }
 
   Future<String> createEvent(EventModel event) async {

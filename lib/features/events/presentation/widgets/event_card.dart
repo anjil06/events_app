@@ -8,9 +8,9 @@ import '../../../events/domain/models/event_model.dart';
 class EventCard extends StatelessWidget {
   final EventModel event;
 
-  const EventCard({
+const EventCard({
     super.key,
-    required this.event,
+ required this.event,
   });
 
   @override
@@ -18,124 +18,122 @@ class EventCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(18),
 
-      onTap: () {
+onTap: () {
         context.push(
           AppRoutes.eventDetails,
-          extra: event,
+extra: event,
         );
       },
 
-      child: Container(
+child: Container(
         padding: const EdgeInsets.all(14),
 
-        decoration: BoxDecoration(
+decoration: BoxDecoration(
           color: Colors.white,
 
-          borderRadius:
+borderRadius:
               BorderRadius.circular(18),
 
-          border: Border.all(
+border: Border.all(
             color: Colors.grey.shade200,
           ),
 
-          boxShadow: [
+boxShadow: [
             BoxShadow(
               color: Colors.black
-                  .withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+.withValues(alpha: 0.04),
+blurRadius: 10,
+offset: const Offset(0, 4),
             ),
           ],
         ),
 
-        child: Row(
+child: Row(
           children: [
             _buildDateContainer(),
 
-            const SizedBox(width: 14),
+const SizedBox(width: 14),
 
-            Expanded(
+Expanded(
               child: Column(
                 crossAxisAlignment:
                     CrossAxisAlignment.start,
 
-                children: [
+children: [
                   Text(
                     event.title,
-                    maxLines: 2,
-                    overflow:
+maxLines: 2,
+overflow:
                         TextOverflow.ellipsis,
 
-                    style: const TextStyle(
+style: const TextStyle(
                       fontSize: 16,
-                      fontWeight:
+fontWeight:
                           FontWeight.w700,
                     ),
                   ),
 
-                  const SizedBox(height: 5),
+const SizedBox(height: 5),
 
-                  Text(
+Text(
                     event.organizerName,
-                    maxLines: 1,
-                    overflow:
+maxLines: 1,
+overflow:
                         TextOverflow.ellipsis,
 
-                    style: TextStyle(
+style: TextStyle(
                       fontSize: 12,
-                      color:
+color:
                           Colors.grey.shade600,
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+const SizedBox(height: 10),
 
-                  Row(
+Row(
                     children: [
                       Icon(
                         Icons.access_time_rounded,
-                        size: 14,
-                        color:
-                            Colors.grey.shade600,
+size: 13,
+color: Colors.grey.shade600,
                       ),
 
-                      const SizedBox(width: 4),
+const SizedBox(width: 4),
 
-                      Text(
-                        event.time,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              Colors.grey.shade600,
+Expanded(
+                        flex: 5,
+child: Text(
+                          event.time,
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: TextStyle(
+                            fontSize: 11,
+color: Colors.grey.shade600,
+                          ),
                         ),
                       ),
 
-                      const SizedBox(width: 10),
+const SizedBox(width: 8),
 
-                      Icon(
+Icon(
                         event.isOnline
-                            ? Icons
-                                .language_rounded
-                            : Icons
-                                .location_on_outlined,
-                        size: 14,
-                        color:
-                            AppTheme.primaryOrange,
+? Icons.language_rounded
+: Icons.location_on_outlined,
+size: 13,
+color: AppTheme.primaryOrange,
                       ),
 
-                      const SizedBox(width: 4),
+const SizedBox(width: 4),
 
-                      Expanded(
-                        child: Text(
+Expanded(
+                        flex: 6,
+child: Text(
                           event.location,
-                          maxLines: 1,
-                          overflow:
-                              TextOverflow.ellipsis,
-
-                          style: TextStyle(
-                            fontSize: 12,
-                            color:
-                                Colors.grey.shade600,
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: TextStyle(
+                            fontSize: 11,
+color: Colors.grey.shade600,
                           ),
                         ),
                       ),
@@ -145,12 +143,12 @@ class EventCard extends StatelessWidget {
               ),
             ),
 
-            IconButton(
-              onPressed: () {},
+IconButton(
+              onPressed: ()  {},
 
-              icon: const Icon(
+icon: const Icon(
                 Icons.bookmark_border_rounded,
-                color:
+color:
                     AppTheme.primaryOrange,
               ),
             ),
@@ -163,33 +161,33 @@ class EventCard extends StatelessWidget {
   Widget _buildDateContainer() {
     return Container(
       height: 68,
-      width: 58,
+width: 58,
 
-      decoration: BoxDecoration(
+decoration: BoxDecoration(
         color: AppTheme.lightOrange,
-        borderRadius:
+borderRadius:
             BorderRadius.circular(14),
       ),
 
-      child: Column(
+child: Column(
         mainAxisAlignment:
             MainAxisAlignment.center,
 
-        children: [
+children: [
           const Icon(
             Icons.calendar_month_rounded,
-            color: AppTheme.primaryOrange,
-            size: 20,
+color: AppTheme.primaryOrange,
+size: 20,
           ),
 
-          const SizedBox(height: 4),
+const SizedBox(height: 4),
 
-          Text(
+Text(
             '${event.date.day}',
-            style: const TextStyle(
+style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color:
+fontWeight: FontWeight.w800,
+color:
                   AppTheme.primaryOrange,
             ),
           ),

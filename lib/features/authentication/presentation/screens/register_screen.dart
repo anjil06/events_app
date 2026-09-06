@@ -9,7 +9,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -38,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) {
+if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -50,19 +50,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+password: _passwordController.text.trim(),
       );
 
       final user = credential.user;
 
-      if (user == null) {
+if (user == null) {
         throw Exception('Unable to create user.');
       }
 
       await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set({
+.collection('users')
+.doc(user.uid)
+.set({
         'uid': user.uid,
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
@@ -76,27 +76,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _nameController.text.trim(),
       );
 
-      if (!mounted) return;
+if (!mounted) return;
 
       context.go(AppRoutes.authGate);
     } on FirebaseAuthException catch (e) {
-      if (!mounted) return;
+if (!mounted) return;
 
       _showError(_getFirebaseErrorMessage(e));
     } on FirebaseException catch (e) {
-      if (!mounted) return;
+if (!mounted) return;
 
       _showError(
         e.message ?? 'Unable to save your profile.',
       );
     } catch (e) {
-      if (!mounted) return;
+if (!mounted) return;
 
       _showError(
         'Something went wrong. Please try again.',
       );
     } finally {
-      if (mounted) {
+if (mounted) {
         setState(() {
           _isLoading = false;
         });
@@ -135,19 +135,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red.shade700,
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
+backgroundColor: Colors.red.shade700,
+behavior: SnackBarBehavior.floating,
+margin: const EdgeInsets.all(16),
       ),
     );
   }
 
   String? _validateName(String? value) {
-    if (value == null || value.trim().isEmpty) {
+if (value == null || value.trim().isEmpty) {
       return 'Name is required';
     }
 
-    if (value.trim().length < 2) {
+if (value.trim().length < 2) {
       return 'Enter a valid name';
     }
 
@@ -155,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.trim().isEmpty) {
+if (value == null || value.trim().isEmpty) {
       return 'Email is required';
     }
 
@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       r'^[\w\.-]+@[\w\.-]+\.\w+$',
     );
 
-    if (!emailRegex.hasMatch(value.trim())) {
+if (!emailRegex.hasMatch(value.trim())) {
       return 'Enter a valid email address';
     }
 
@@ -171,11 +171,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
+if (value == null || value.isEmpty) {
       return 'Password is required';
     }
 
-    if (value.length < 6) {
+if (value.length < 6) {
       return 'Password must contain at least 6 characters';
     }
 
@@ -183,11 +183,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
+if (value == null || value.isEmpty) {
       return 'Please confirm your password';
     }
 
-    if (value != _passwordController.text) {
+if (value != _passwordController.text) {
       return 'Passwords do not match';
     }
 
@@ -198,72 +198,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Create Account'),
+title: const Text('Create Account'),
       ),
-      body: SafeArea(
+body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
                 horizontal: 24,
-                vertical: 20,
+vertical: 20,
               ),
-              child: ConstrainedBox(
+child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight - 40,
                 ),
-                child: Form(
+child: Form(
                   key: _formKey,
-                  child: Column(
+child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+children: [
                       _buildHeader(),
 
-                      const SizedBox(height: 32),
+const SizedBox(height: 32),
 
-                      AppTextField(
+AppTextField(
                         controller: _nameController,
-                        label: 'Full Name',
-                        hint: 'Enter your full name',
-                        prefixIcon: Icons.person_outline,
-                        keyboardType: TextInputType.name,
-                        validator: _validateName,
+label: 'Full Name',
+hint: 'Enter your full name',
+prefixIcon: Icons.person_outline,
+keyboardType: TextInputType.name,
+validator: _validateName,
                       ),
 
-                      const SizedBox(height: 18),
+const SizedBox(height: 18),
 
-                      AppTextField(
+AppTextField(
                         controller: _emailController,
-                        label: 'Email',
-                        hint: 'Enter your email',
-                        prefixIcon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: _validateEmail,
+label: 'Email',
+hint: 'Enter your email',
+prefixIcon: Icons.email_outlined,
+keyboardType: TextInputType.emailAddress,
+validator: _validateEmail,
                       ),
 
-                      const SizedBox(height: 18),
+const SizedBox(height: 18),
 
-                      _buildPasswordField(),
+_buildPasswordField(),
 
-                      const SizedBox(height: 18),
+const SizedBox(height: 18),
 
-                      _buildConfirmPasswordField(),
+_buildConfirmPasswordField(),
 
-                      const SizedBox(height: 28),
+const SizedBox(height: 28),
 
-                      AppButton(
+AppButton(
                         text: 'Create Account',
-                        onPressed: _register,
-                        isLoading: _isLoading,
+onPressed: _register,
+isLoading: _isLoading,
                       ),
 
-                      const SizedBox(height: 24),
+const SizedBox(height: 24),
 
-                      _buildLoginSection(),
+_buildLoginSection(),
 
-                      const SizedBox(height: 20),
+const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -278,41 +278,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildHeader() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+children: [
         Container(
           height: 64,
-          width: 64,
-          decoration: BoxDecoration(
+width: 64,
+padding: const EdgeInsets.all(12),
+decoration: BoxDecoration(
             color: AppTheme.lightOrange,
-            borderRadius: BorderRadius.circular(18),
+borderRadius: BorderRadius.circular(18),
           ),
-          child: const Icon(
-            Icons.person_add_alt_1_rounded,
-            color: AppTheme.primaryOrange,
-            size: 34,
+child: Image.asset(
+            'assets/images/techculture_icon_mark.png',
+fit: BoxFit.contain,
           ),
         ),
 
-        const SizedBox(height: 20),
+const SizedBox(height: 20),
 
-        const Text(
-          'Join TechScope 🚀',
-          style: TextStyle(
+const Text(
+          'Join TechCulture 🚀',
+style: TextStyle(
             fontSize: 30,
-            fontWeight: FontWeight.w800,
-            color: Colors.black,
+fontWeight: FontWeight.w800,
+color: Colors.black,
           ),
         ),
 
-        const SizedBox(height: 8),
+const SizedBox(height: 8),
 
-        Text(
-          'Create an account and start discovering '
-          'amazing technical events.',
-          style: TextStyle(
+Text(
+          'Create an account and connect with '
+          'the global developer culture.',
+style: TextStyle(
             fontSize: 15,
-            height: 1.5,
-            color: Colors.grey.shade600,
+height: 1.5,
+color: Colors.grey.shade600,
           ),
         ),
       ],
@@ -322,24 +322,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildPasswordField() {
     return TextFormField(
       controller: _passwordController,
-      obscureText: _obscurePassword,
-      validator: _validatePassword,
-      decoration: InputDecoration(
+obscureText: _obscurePassword,
+validator: _validatePassword,
+decoration: InputDecoration(
         labelText: 'Password',
-        hintText: 'Create a password',
-        prefixIcon: const Icon(
+hintText: 'Create a password',
+prefixIcon: const Icon(
           Icons.lock_outline_rounded,
         ),
-        suffixIcon: IconButton(
+suffixIcon: IconButton(
           onPressed: () {
             setState(() {
               _obscurePassword = !_obscurePassword;
             });
           },
-          icon: Icon(
+icon: Icon(
             _obscurePassword
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
+? Icons.visibility_outlined
+: Icons.visibility_off_outlined,
           ),
         ),
       ),
@@ -349,25 +349,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildConfirmPasswordField() {
     return TextFormField(
       controller: _confirmPasswordController,
-      obscureText: _obscureConfirmPassword,
-      validator: _validateConfirmPassword,
-      decoration: InputDecoration(
+obscureText: _obscureConfirmPassword,
+validator: _validateConfirmPassword,
+decoration: InputDecoration(
         labelText: 'Confirm Password',
-        hintText: 'Re-enter your password',
-        prefixIcon: const Icon(
+hintText: 'Re-enter your password',
+prefixIcon: const Icon(
           Icons.lock_reset_outlined,
         ),
-        suffixIcon: IconButton(
+suffixIcon: IconButton(
           onPressed: () {
             setState(() {
               _obscureConfirmPassword =
                   !_obscureConfirmPassword;
             });
           },
-          icon: Icon(
+icon: Icon(
             _obscureConfirmPassword
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
+? Icons.visibility_outlined
+: Icons.visibility_off_outlined,
           ),
         ),
       ),
@@ -377,22 +377,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildLoginSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+children: [
         Text(
           'Already have an account?',
-          style: TextStyle(
+style: TextStyle(
             color: Colors.grey.shade600,
           ),
         ),
-        TextButton(
+TextButton(
           onPressed: () {
             context.go(AppRoutes.login);
           },
-          child: const Text(
+child: const Text(
             'Login',
-            style: TextStyle(
+style: TextStyle(
               color: AppTheme.primaryOrange,
-              fontWeight: FontWeight.w700,
+fontWeight: FontWeight.w700,
             ),
           ),
         ),
