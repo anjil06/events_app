@@ -9,24 +9,28 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../events/data/services/event_services.dart';
 import '../../../events/domain/models/event_model.dart';
-import '../../../home/presentation/widgets/bottom_navigation_bar.dart';
 import '../../../home/presentation/widgets/category_chip.dart';
 
 class ExploreEventsScreen extends StatefulWidget {
-  const ExploreEventsScreen({super.key});
+const ExploreEventsScreen({super.key});
 
   @override
   State<ExploreEventsScreen> createState() => _ExploreEventsScreenState();
 }
 
 class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
-  static const _categories = [
+static const _categories = [
     'All',
-    'Hackathons',
-    'Coding',
-    'Workshops',
-    'Webinars',
-    'Meetups',
+'AI',
+'Web Development',
+'App Development',
+'Cybersecurity',
+'Cloud',
+'Data Science',
+'Blockchain',
+'DevOps',
+'Programming',
+'Startups',
   ];
 
   String _selectedCategory = 'All';
@@ -36,32 +40,32 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
 
-      appBar: AppBar(
+appBar: AppBar(
         title: const Text(
-          'Explore Events',
-          style: TextStyle(
+          'Explore TechCulture',
+style: TextStyle(
             fontSize: 22,
-            fontWeight: FontWeight.w800,
+fontWeight: FontWeight.w800,
           ),
         ),
 
-        actions: [
+actions: [
           IconButton(
             onPressed: () {
               context.push(AppRoutes.search);
             },
-            icon: const Icon(Icons.search_rounded),
+icon: const Icon(Icons.search_rounded),
           ),
 
-          const SizedBox(width: 8),
+const SizedBox(width: 8),
         ],
       ),
 
-      body: StreamBuilder<List<EventModel>>(
+body: StreamBuilder<List<EventModel>>(
         stream: EventService.instance.getEvents(),
 
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+builder: (context, snapshot) {
+if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
                 color: AppTheme.primaryOrange,
@@ -69,25 +73,25 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
             );
           }
 
-          if (snapshot.hasError) {
+if (snapshot.hasError) {
             return const Center(
               child: Text(
                 'Unable to load events.',
-                style: TextStyle(
+style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w600,
+fontWeight: FontWeight.w600,
                 ),
               ),
             );
           }
 
-          final events = (snapshot.data ?? [])
-              .where(
-                (event) =>
-            _selectedCategory == 'All' ||
-                event.category == _selectedCategory,
-          )
-              .toList();
+          final events = (snapshot.data ?? []).where((event) {
+if (_selectedCategory == 'All') return true;
+            final cat = _selectedCategory.toLowerCase();
+            return event.category.toLowerCase() == cat ||
+                event.domain.toLowerCase().contains(cat) ||
+                (cat == 'ai' && event.domain.toLowerCase().contains('ai'));
+          }).toList();
 
           return Column(
             children: [
@@ -97,27 +101,27 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
               SizedBox(
                 height: 58,
 
-                child: ListView.separated(
+child: ListView.separated(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: 8,
+vertical: 8,
                   ),
 
-                  scrollDirection: Axis.horizontal,
+scrollDirection: Axis.horizontal,
 
-                  itemCount: _categories.length,
+itemCount: _categories.length,
 
-                  separatorBuilder: (_, __) {
+separatorBuilder: (_, index) {
                     return const SizedBox(width: 8);
                   },
 
-                  itemBuilder: (context, index) {
+itemBuilder: (context, index) {
                     final category = _categories[index];
 
                     return CategoryChip(
                       label: category,
-                      selected: _selectedCategory == category,
-                      onSelected: () {
+selected: _selectedCategory == category,
+onSelected: () {
                         setState(() {
                           _selectedCategory = category;
                         });
@@ -130,32 +134,32 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
               // --------------------------------
               // EVENT FEED
               // --------------------------------
-              Expanded(
+Expanded(
                 child: events.isEmpty
-                    ? const Center(
+? const Center(
                   child: Text(
                     'No events found in this category.',
-                    style: TextStyle(
+style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w600,
+fontWeight: FontWeight.w600,
                     ),
                   ),
                 )
-                    : ListView.separated(
+: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(
                     16,
-                    8,
-                    16,
-                    24,
+8,
+16,
+24,
                   ),
 
-                  itemCount: events.length,
+itemCount: events.length,
 
-                  separatorBuilder: (_, __) {
+separatorBuilder: (_, index) {
                     return const SizedBox(height: 20);
                   },
 
-                  itemBuilder: (context, index) {
+itemBuilder: (context, index) {
                     return _EventPost(
                       event: events[index],
                     );
@@ -167,7 +171,46 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
         },
       ),
 
-      bottomNavigationBar: const MainNavigationScreen()
+bottomNavigationBar: NavigationBar(
+        selectedIndex: 1,
+onDestinationSelected: (index) {
+          switch (index) {
+            case 0:
+              context.go(AppRoutes.home);
+              break;
+            case 1:
+              break;
+            case 2:
+              context.go(AppRoutes.savedEvents);
+              break;
+            case 3:
+              context.go(AppRoutes.profile);
+              break;
+          }
+        },
+destinations: const[
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+selectedIcon: Icon(Icons.home_rounded),
+label: 'Home',
+          ),
+NavigationDestination(
+            icon: Icon(Icons.explore_outlined),
+selectedIcon: Icon(Icons.explore_rounded),
+label: 'Explore',
+          ),
+NavigationDestination(
+            icon: Icon(Icons.bookmark_outline_rounded),
+selectedIcon: Icon(Icons.bookmark_rounded),
+label: 'Saved',
+          ),
+NavigationDestination(
+            icon: Icon(Icons.person_outline_rounded),
+selectedIcon: Icon(Icons.person_rounded),
+label: 'Profile',
+          ),
+        ],
+      ),
     );
   }
 }
@@ -177,7 +220,7 @@ class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
 // ============================================================
 
 class _EventPost extends StatefulWidget {
-  const _EventPost({
+const _EventPost({
     required this.event,
   });
 
@@ -209,7 +252,7 @@ class _EventPostState extends State<_EventPost> {
 ⏰ ${event.time}
 📍 ${event.location}
 
-Join this event on TechScope!
+Join this event on TechCulture!
 ''';
 
     await SharePlus.instance.share(
@@ -222,17 +265,17 @@ Join this event on TechScope!
   Future<void> _checkBookmark() async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null || event.id.isEmpty) {
+if (user == null || event.id.isEmpty) {
       return;
     }
 
     try {
       final bookmarked = await BookmarkService.instance.isBookmarked(
         userId: user.uid,
-        eventId: event.id,
+eventId: event.id,
       );
 
-      if (!mounted) return;
+if (!mounted) return;
 
       setState(() {
         _isSaved = bookmarked;
@@ -245,11 +288,11 @@ Join this event on TechScope!
   Future<void> _toggleBookmark() async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null || event.id.isEmpty) {
+if (user == null || event.id.isEmpty) {
       return;
     }
 
-    if (_isLoading) return;
+if (_isLoading) return;
 
     setState(() {
       _isLoading = true;
@@ -258,16 +301,16 @@ Join this event on TechScope!
     try {
       final existingBookmark = await BookmarkService.instance.getBookmark(
         userId: user.uid,
-        eventId: event.id,
+eventId: event.id,
       );
 
-      if (existingBookmark != null) {
+if (existingBookmark != null) {
         await BookmarkService.instance.removeBookmark(
           userId: user.uid,
-          eventId: event.id,
+eventId: event.id,
         );
 
-        if (!mounted) return;
+if (!mounted) return;
 
         setState(() {
           _isSaved = false;
@@ -276,15 +319,15 @@ Join this event on TechScope!
       } else {
         final bookmark = BookmarkModel(
           id: '',
-          userId: user.uid,
-          eventId: event.id,
-          eventTitle: event.title,
-          savedAt: DateTime.now(),
+userId: user.uid,
+eventId: event.id,
+eventTitle: event.title,
+savedAt: DateTime.now(),
         );
 
         await BookmarkService.instance.addBookmark(bookmark);
 
-        if (!mounted) return;
+if (!mounted) return;
 
         setState(() {
           _isSaved = true;
@@ -294,7 +337,7 @@ Join this event on TechScope!
     } catch (e) {
       debugPrint('BOOKMARK ERROR: $e');
 
-      if (!mounted) return;
+if (!mounted) return;
 
       setState(() {
         _isLoading = false;
@@ -307,84 +350,84 @@ Join this event on TechScope!
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
+borderRadius: BorderRadius.circular(18),
+border: Border.all(
           color: Colors.grey.shade200,
         ),
-        boxShadow: [
+boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+blurRadius: 10,
+offset: const Offset(0, 4),
           ),
         ],
       ),
-      clipBehavior: Clip.antiAlias,
+clipBehavior: Clip.antiAlias,
 
-      child: Column(
+child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+children: [
           GestureDetector(
             onTap: () {
               context.push(
                 AppRoutes.eventDetails,
-                extra: event,
+extra: event,
               );
             },
-            child: Stack(
+child: Stack(
               children: [
                 SizedBox(
                   width: double.infinity,
-                  height: 230,
-                  child: _EventImage(
+height: 230,
+child: _EventImage(
                     imageUrl: event.imageUrl,
                   ),
                 ),
 
                 // Category
-                Positioned(
+Positioned(
                   top: 12,
-                  left: 12,
-                  child: Container(
+left: 12,
+child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
-                      vertical: 6,
+vertical: 6,
                     ),
-                    decoration: BoxDecoration(
+decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
+child: Text(
                       event.category,
-                      style: const TextStyle(
+style: const TextStyle(
                         color: AppTheme.primaryOrange,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+fontSize: 12,
+fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                 ),
 
                 // Save + Share
-                Positioned(
+Positioned(
                   top: 10,
-                  right: 10,
-                  child: Row(
+right: 10,
+child: Row(
                     children: [
                       _PostIconButton(
                         icon: _isSaved
-                            ? Icons.bookmark_rounded
-                            : Icons.bookmark_border_rounded,
-                        isLoading: _isLoading,
-                        onPressed: _toggleBookmark,
+? Icons.bookmark_rounded
+: Icons.bookmark_border_rounded,
+isLoading: _isLoading,
+onPressed: _toggleBookmark,
                       ),
 
-                      const SizedBox(width: 8),
+const SizedBox(width: 8),
 
-                      _PostIconButton(
+_PostIconButton(
                         icon: Icons.share_rounded,
-                        onPressed: _shareEvent
-                      ),
+onPressed: _shareEvent
+),
                     ],
                   ),
                 ),
@@ -392,43 +435,43 @@ Join this event on TechScope!
             ),
           ),
 
-          Padding(
+Padding(
             padding: const EdgeInsets.fromLTRB(
               16,
-              14,
-              16,
-              16,
+14,
+16,
+16,
             ),
-            child: Column(
+child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+children: [
                 Text(
                   event.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+maxLines: 2,
+overflow: TextOverflow.ellipsis,
+style: const TextStyle(
                     fontSize: 19,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black,
-                    height: 1.2,
+fontWeight: FontWeight.w800,
+color: Colors.black,
+height: 1.2,
                   ),
                 ),
 
-                const SizedBox(height: 12),
+const SizedBox(height: 12),
 
-                _EventInfoRow(
+_EventInfoRow(
                   icon: Icons.calendar_month_rounded,
-                  text:
+text:
                   '${_formatDate(event.date)} • ${event.time}',
                 ),
 
-                const SizedBox(height: 8),
+const SizedBox(height: 8),
 
-                _EventInfoRow(
+_EventInfoRow(
                   icon: event.isOnline
-                      ? Icons.language_rounded
-                      : Icons.location_on_rounded,
-                  text: event.location,
+? Icons.language_rounded
+: Icons.location_on_rounded,
+text: event.location,
                 ),
               ],
             ),
@@ -441,17 +484,17 @@ Join this event on TechScope!
   String _formatDate(DateTime date) {
     const months = [
       'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+'Feb',
+'Mar',
+'Apr',
+'May',
+'Jun',
+'Jul',
+'Aug',
+'Sep',
+'Oct',
+'Nov',
+'Dec',
     ];
 
     return '${date.day} ${months[date.month - 1]} ${date.year}';
@@ -463,7 +506,7 @@ Join this event on TechScope!
 // ============================================================
 
 class _EventImage extends StatelessWidget {
-  const _EventImage({
+const _EventImage({
     required this.imageUrl,
   });
 
@@ -471,38 +514,38 @@ class _EventImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl.isEmpty) {
+if (imageUrl.isEmpty) {
       return _placeholder();
     }
 
     return Image.network(
       imageUrl,
 
-      fit: BoxFit.cover,
+fit: BoxFit.cover,
 
-      width: double.infinity,
+width: double.infinity,
 
-      errorBuilder: (
+errorBuilder: (
           context,
-          error,
-          stackTrace,
+ error,
+ stackTrace,
           ) {
         return _placeholder();
       },
 
-      loadingBuilder: (
+loadingBuilder: (
           context,
-          child,
-          loadingProgress,
+ child,
+ loadingProgress,
           ) {
-        if (loadingProgress == null) {
+if (loadingProgress == null) {
           return child;
         }
 
         return Container(
           color: AppTheme.lightOrange,
 
-          child: const Center(
+child: const Center(
             child: CircularProgressIndicator(
               color: AppTheme.primaryOrange,
             ),
@@ -516,11 +559,11 @@ class _EventImage extends StatelessWidget {
     return Container(
       color: AppTheme.lightOrange,
 
-      child: const Center(
+child: const Center(
         child: Icon(
           Icons.event_rounded,
-          size: 70,
-          color: AppTheme.primaryOrange,
+size: 70,
+color: AppTheme.primaryOrange,
         ),
       ),
     );
@@ -532,10 +575,10 @@ class _EventImage extends StatelessWidget {
 // ============================================================
 
 class _PostIconButton extends StatelessWidget {
-  const _PostIconButton({
+const _PostIconButton({
     required this.icon,
-    required this.onPressed,
-    this.isLoading = false,
+ required this.onPressed,
+ this.isLoading = false,
   });
 
   final IconData icon;
@@ -546,28 +589,28 @@ class _PostIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      shape: const CircleBorder(),
+shape: const CircleBorder(),
 
-      child: InkWell(
+child: InkWell(
         onTap: isLoading ? null : onPressed,
-        customBorder: const CircleBorder(),
+customBorder: const CircleBorder(),
 
-        child: SizedBox(
+child: SizedBox(
           height: 40,
-          width: 40,
+width: 40,
 
-          child: isLoading
-              ? const Padding(
+child: isLoading
+? const Padding(
             padding: EdgeInsets.all(11),
-            child: CircularProgressIndicator(
+child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: AppTheme.primaryOrange,
+color: AppTheme.primaryOrange,
             ),
           )
-              : Icon(
+: Icon(
             icon,
-            color: AppTheme.primaryOrange,
-            size: 21,
+color: AppTheme.primaryOrange,
+size: 21,
           ),
         ),
       ),
@@ -580,9 +623,9 @@ class _PostIconButton extends StatelessWidget {
 // ============================================================
 
 class _EventInfoRow extends StatelessWidget {
-  const _EventInfoRow({
+const _EventInfoRow({
     required this.icon,
-    required this.text,
+ required this.text,
   });
 
   final IconData icon;
@@ -593,25 +636,25 @@ class _EventInfoRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
 
-      children: [
+children: [
         Icon(
           icon,
-          size: 19,
-          color: AppTheme.primaryOrange,
+size: 19,
+color: AppTheme.primaryOrange,
         ),
 
-        const SizedBox(width: 8),
+const SizedBox(width: 8),
 
-        Expanded(
+Expanded(
           child: Text(
             text,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+maxLines: 2,
+overflow: TextOverflow.ellipsis,
 
-            style: TextStyle(
+style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade700,
-              fontWeight: FontWeight.w500,
+color: Colors.grey.shade700,
+fontWeight: FontWeight.w500,
             ),
           ),
         ),

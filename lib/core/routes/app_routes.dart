@@ -17,147 +17,155 @@ import '../../features/registrations/presentation/screens/registered_events_scre
 import '../../features/organizer/presentation/screens/manage_events_screen.dart';
 import '../../features/organizer/presentation/screens/event_form_screen.dart';
 import '../../features/organizer/presentation/screens/event_registrations_screen.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
 
 class AppRoutes {
-  static const String splash = '/';
-  static const String authGate = '/auth-gate';
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String forgotPassword = '/forgot-password';
-  static const String home = '/home';
-  static const String explore = "/explore";
-  static const String profile = '/profile';
-  static const String eventDetails = '/event-details';
-  static const String savedEvents = '/saved-events';
-  static const String search = '/search';
-  static const String registeredEvents = '/registered-events';
-  static const String manageEvents = '/manage-events';
-  static const String eventForm = '/event-form';
-  static const String eventRegistrations = '/event-registrations';
+static const String splash = '/';
+static const String authGate = '/auth-gate';
+static const String login = '/login';
+static const String register = '/register';
+static const String forgotPassword = '/forgot-password';
+static const String home = '/home';
+static const String explore = "/explore";
+static const String profile = '/profile';
+static const String eventDetails = '/event-details';
+static const String savedEvents = '/saved-events';
+static const String search = '/search';
+static const String registeredEvents = '/registered-events';
+static const String manageEvents = '/manage-events';
+static const String eventForm = '/event-form';
+static const String eventRegistrations = '/event-registrations';
+static const String notifications = '/notifications';
 
-  static final GoRouter router = GoRouter(
+static final GoRouter router = GoRouter(
     initialLocation: splash,
 
-    routes: [
+routes: [
       GoRoute(
         path: splash,
-        builder: (context, state) {
+builder: (context, state) {
           return const SplashScreen();
         },
       ),
 
-      GoRoute(
+GoRoute(
         path: authGate,
-        builder: (context, state) {
+builder: (context, state) {
           return const AuthGate();
         },
       ),
 
-      GoRoute(
+GoRoute(
         path: login,
-        builder: (context, state) {
+builder: (context, state) {
           return const LoginScreen();
         },
       ),
 
-      GoRoute(
+GoRoute(
         path: register,
-        builder: (context, state) {
+builder: (context, state) {
           return const RegisterScreen();
         },
       ),
 
-      GoRoute(
+GoRoute(
         path: forgotPassword,
-        builder: (context, state) {
+builder: (context, state) {
           return const ForgotPasswordScreen();
         },
       ),
 
-      GoRoute(
+GoRoute(
         path: AppRoutes.home,
-        pageBuilder: (context, state) {
+pageBuilder: (context, state) {
           return CustomTransitionPage(
             key: state.pageKey,
-            child: const HomeScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child,) {
+child: const HomeScreen(),
+transitionsBuilder: (context, animation, secondaryAnimation, child,) {
               return SlideTransition(
                 position: Tween<Offset>(
                   begin: const Offset(1, 0),
-                  end: Offset.zero,
+end: Offset.zero,
                 ).animate(
                   CurvedAnimation(
                     parent: animation,
-                    curve: Curves.easeInOut,
+curve: Curves.easeInOut,
                   ),
                 ),
-                child: child,
+child: child,
               );
             },
           );
         },
       ),
-      GoRoute(
+GoRoute(
         path: profile,
-        builder: (context, state) {
+builder: (context, state) {
           return const ProfileScreen();
         },
       ),
-      GoRoute(
+GoRoute(
         path: eventDetails,
-        builder: (context, state) {
+builder: (context, state) {
           final event = state.extra as EventModel;
 
           return EventDetailsScreen(event: event);
         },
       ),
-      GoRoute(
+GoRoute(
         path: AppRoutes.explore,
-        pageBuilder: (context, state) {
+pageBuilder: (context, state) {
           return CustomTransitionPage(
             key: state.pageKey,
-            child: const ExploreEventsScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child,) {
+child: const ExploreEventsScreen(),
+transitionsBuilder: (context, animation, secondaryAnimation, child,) {
               return SlideTransition(
                 position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero,).animate(CurvedAnimation(
                     parent: animation,
-                    curve: Curves.easeInOut,
+curve: Curves.easeInOut,
                   ),
                 ),
-                child: child,
+child: child,
               );
             },
           );
         },
       ),
-      GoRoute(
+GoRoute(
         path: savedEvents,
-        builder: (context, state) {
+builder: (context, state) {
           return const SavedEventsScreen();
         },
       ),
-      GoRoute(
+GoRoute(
         path: registeredEvents,
-        builder: (context, state) {
+builder: (context, state) {
           return const RegisteredEventsScreen();
         },
       ),
-      GoRoute(
+GoRoute(
         path: manageEvents,
-        builder: (context, state) => const ManageEventsScreen(),
+builder: (context, state) => const ManageEventsScreen(),
       ),
-      GoRoute(
+GoRoute(
         path: eventForm,
-        builder: (context, state) => EventFormScreen(event: state.extra as EventModel?),
+builder: (context, state) => EventFormScreen(event: state.extra as EventModel?),
       ),
-      GoRoute(
+GoRoute(
         path: eventRegistrations,
-        builder: (context, state) => EventRegistrationsScreen(event: state.extra! as EventModel),
+builder: (context, state) => EventRegistrationsScreen(event: state.extra! as EventModel),
       ),
-      GoRoute(
+GoRoute(
         path: AppRoutes.search,
-        builder: (context, state) {
+builder: (context, state) {
           return const SearchEventsScreen();
+        },
+      ),
+GoRoute(
+        path: notifications,
+builder: (context, state) {
+          return const NotificationsScreen();
         },
       ),
     ],

@@ -6,7 +6,7 @@ import '../../../events/data/services/event_services.dart';
 import '../../../events/domain/models/event_model.dart';
 
 class SearchEventsScreen extends StatefulWidget {
-  const SearchEventsScreen({
+const SearchEventsScreen({
     super.key,
   });
 
@@ -33,16 +33,17 @@ class _SearchEventsScreenState
   bool? _selectedIsOnline;
   String? _selectedLevel;
 
-  static const List<String> _domains = [
-    'Web Development',
-    'App Development',
+static const List<String> _domains = [
     'AI & ML',
-    'Data Science',
-    'Cyber Security',
-    'Cloud Computing',
-    'Blockchain',
-    'IoT',
-    'Programming',
+'Web Development',
+'App Development',
+'Data Science',
+'Cyber Security',
+'Cloud Computing',
+'Blockchain',
+'DevOps',
+'Programming',
+'Startups',
   ];
 
   bool get _hasActiveFilters {
@@ -69,8 +70,8 @@ class _SearchEventsScreenState
       _searchQuery = query;
     });
 
-    if (query.isEmpty) {
-      if (_hasActiveFilters) {
+if (query.isEmpty) {
+if (_hasActiveFilters) {
         _applyFilters();
       } else {
         setState(() {
@@ -99,7 +100,7 @@ class _SearchEventsScreenState
         query,
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -112,7 +113,7 @@ class _SearchEventsScreenState
         'Search error: $e',
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -138,12 +139,12 @@ class _SearchEventsScreenState
       final results =
           await EventService.instance.filterEvents(
         domain: _selectedDomain,
-        date: _selectedDate,
-        isOnline: _selectedIsOnline,
-        level: _selectedLevel,
+date: _selectedDate,
+isOnline: _selectedIsOnline,
+level: _selectedLevel,
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -156,7 +157,7 @@ class _SearchEventsScreenState
         'Filter error: $e',
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -177,23 +178,23 @@ class _SearchEventsScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Search Events',
+          'Search TechCulture',
         ),
       ),
 
-      body: Padding(
+body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+child: Column(
           children: [
             _buildSearchBar(),
 
-            const SizedBox(height: 16),
+const SizedBox(height: 16),
 
-            _buildFilterSection(),
+_buildFilterSection(),
 
-            const SizedBox(height: 16),
+const SizedBox(height: 16),
 
-            Expanded(
+Expanded(
               child: _buildSearchResults(),
             ),
           ],
@@ -209,17 +210,17 @@ class _SearchEventsScreenState
   Widget _buildSearchBar() {
     return TextField(
       controller: _searchController,
-      onChanged: _onSearchChanged,
+onChanged: _onSearchChanged,
 
-      decoration: InputDecoration(
-        hintText: 'Search events...',
+decoration: InputDecoration(
+        hintText: 'Search articles, events, communities, resources...',
 
-        prefixIcon: const Icon(
+prefixIcon: const Icon(
           Icons.search_rounded,
         ),
 
-        suffixIcon: _searchQuery.isNotEmpty
-            ? IconButton(
+suffixIcon: _searchQuery.isNotEmpty
+? IconButton(
                 onPressed: () {
                   _searchController.clear();
 
@@ -227,7 +228,7 @@ class _SearchEventsScreenState
                     _searchQuery = '';
                   });
 
-                  if (_hasActiveFilters) {
+if (_hasActiveFilters) {
                     _applyFilters();
                   } else {
                     setState(() {
@@ -236,29 +237,29 @@ class _SearchEventsScreenState
                     });
                   }
                 },
-                icon: const Icon(
+icon: const Icon(
                   Icons.clear_rounded,
                 ),
               )
-            : null,
+: null,
 
-        filled: true,
+filled: true,
 
-        border: OutlineInputBorder(
+border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+borderSide: BorderSide.none,
         ),
 
-        enabledBorder: OutlineInputBorder(
+enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+borderSide: BorderSide.none,
         ),
 
-        focusedBorder: OutlineInputBorder(
+focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
+borderSide: const BorderSide(
             color: Colors.orange,
-            width: 2,
+width: 2,
           ),
         ),
       ),
@@ -273,25 +274,25 @@ class _SearchEventsScreenState
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
 
-      child: Row(
+child: Row(
         children: [
           _buildDomainFilter(),
 
-          const SizedBox(width: 8),
+const SizedBox(width: 8),
 
-          _buildDateFilter(),
+_buildDateFilter(),
 
-          const SizedBox(width: 8),
+const SizedBox(width: 8),
 
-          _buildModeFilter(),
+_buildModeFilter(),
 
-          const SizedBox(width: 8),
+const SizedBox(width: 8),
 
-          _buildLevelFilter(),
+_buildLevelFilter(),
 
-          if (_hasActiveFilters) ...[
+if (_hasActiveFilters) ...[
             const SizedBox(width: 8),
-            _buildClearFilterButton(),
+_buildClearFilterButton(),
           ],
         ],
       ),
@@ -312,24 +313,24 @@ class _SearchEventsScreenState
         _applyFilters();
       },
 
-      itemBuilder: (context) {
+itemBuilder: (context) {
         return _domains.map(
-          (domain) {
+(domain) {
             return PopupMenuItem<String>(
               value: domain,
-              child: Text(domain),
+child: Text(domain),
             );
           },
         ).toList();
       },
 
-      child: Chip(
+child: Chip(
         avatar: const Icon(
           Icons.category_outlined,
-          size: 18,
+size: 18,
         ),
 
-        label: Text(
+label: Text(
           _selectedDomain ?? 'Domain',
         ),
       ),
@@ -344,37 +345,37 @@ class _SearchEventsScreenState
     return ActionChip(
       avatar: const Icon(
         Icons.calendar_today_outlined,
-        size: 18,
+size: 18,
       ),
 
-      label: Text(
+label: Text(
         _selectedDate == null
-            ? 'Date'
-            : '${_selectedDate!.day}/'
+? 'Date'
+: '${_selectedDate!.day}/'
                 '${_selectedDate!.month}/'
                 '${_selectedDate!.year}',
       ),
 
-      onPressed: () async {
+onPressed: () async {
         final selected =
             await showDatePicker(
           context: context,
 
-          firstDate: DateTime.now(),
+firstDate: DateTime.now(),
 
-          lastDate:
+lastDate:
               DateTime.now().add(
             const Duration(
               days: 365,
             ),
           ),
 
-          initialDate:
+initialDate:
               _selectedDate ??
                   DateTime.now(),
         );
 
-        if (selected == null) {
+if (selected == null) {
           return;
         }
 
@@ -401,32 +402,32 @@ class _SearchEventsScreenState
         _applyFilters();
       },
 
-      itemBuilder: (context) {
-        return const [
+itemBuilder: (context) {
+        return const[
           PopupMenuItem<bool>(
             value: true,
-            child: Text('Online'),
+child: Text('Online'),
           ),
 
-          PopupMenuItem<bool>(
+PopupMenuItem<bool>(
             value: false,
-            child: Text('Offline'),
+child: Text('Offline'),
           ),
         ];
       },
 
-      child: Chip(
+child: Chip(
         avatar: const Icon(
           Icons.language_rounded,
-          size: 18,
+size: 18,
         ),
 
-        label: Text(
+label: Text(
           _selectedIsOnline == null
-              ? 'Mode'
-              : _selectedIsOnline!
-                  ? 'Online'
-                  : 'Offline',
+? 'Mode'
+: _selectedIsOnline!
+? 'Online'
+: 'Offline',
         ),
       ),
     );
@@ -446,27 +447,27 @@ class _SearchEventsScreenState
         _applyFilters();
       },
 
-      itemBuilder: (context) {
-        return const [
+itemBuilder: (context) {
+        return const[
           PopupMenuItem<String>(
             value: 'Beginner',
-            child: Text('Beginner'),
+child: Text('Beginner'),
           ),
 
-          PopupMenuItem<String>(
+PopupMenuItem<String>(
             value: 'Advanced',
-            child: Text('Advanced'),
+child: Text('Advanced'),
           ),
         ];
       },
 
-      child: Chip(
+child: Chip(
         avatar: const Icon(
           Icons.signal_cellular_alt_rounded,
-          size: 18,
+size: 18,
         ),
 
-        label: Text(
+label: Text(
           _selectedLevel ?? 'Level',
         ),
       ),
@@ -481,14 +482,14 @@ class _SearchEventsScreenState
     return ActionChip(
       avatar: const Icon(
         Icons.clear_rounded,
-        size: 18,
+size: 18,
       ),
 
-      label: const Text(
+label: const Text(
         'Clear',
       ),
 
-      onPressed: () {
+onPressed: () {
         setState(() {
           _selectedDomain = null;
           _selectedDate = null;
@@ -496,7 +497,7 @@ class _SearchEventsScreenState
           _selectedLevel = null;
         });
 
-        if (_searchQuery.isNotEmpty) {
+if (_searchQuery.isNotEmpty) {
           _searchEvents(_searchQuery);
         } else {
           setState(() {
@@ -512,7 +513,7 @@ class _SearchEventsScreenState
   // --------------------------------------------------
 
   Widget _buildSearchResults() {
-    if (_isLoading) {
+if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(
           color: Colors.orange,
@@ -520,7 +521,7 @@ class _SearchEventsScreenState
       );
     }
 
-    if (_errorMessage != null) {
+if (_errorMessage != null) {
       return Center(
         child: Text(
           _errorMessage!,
@@ -528,30 +529,30 @@ class _SearchEventsScreenState
       );
     }
 
-    if (_searchQuery.isEmpty &&
+if (_searchQuery.isEmpty &&
         !_hasActiveFilters) {
       return _buildSearchEmptyState();
     }
 
-    if (_results.isEmpty) {
+if (_results.isEmpty) {
       return _buildNoResults();
     }
 
     return ListView.separated(
       itemCount: _results.length,
 
-      separatorBuilder: (
+separatorBuilder: (
         context,
-        index,
+ index,
       ) {
         return const SizedBox(
           height: 12,
         );
       },
 
-      itemBuilder: (
+itemBuilder: (
         context,
-        index,
+ index,
       ) {
         final event = _results[index];
 
@@ -572,118 +573,118 @@ class _SearchEventsScreenState
     return Card(
       elevation: 0,
 
-      shape: RoundedRectangleBorder(
+shape: RoundedRectangleBorder(
         borderRadius:
             BorderRadius.circular(18),
 
-        side: BorderSide(
+side: BorderSide(
           color: Colors.grey.shade200,
         ),
       ),
 
-      child: InkWell(
+child: InkWell(
         borderRadius:
             BorderRadius.circular(18),
 
-        onTap: () {
+onTap: () {
           context.push(
             AppRoutes.eventDetails,
-            extra: event,
+extra: event,
           );
         },
 
-        child: Padding(
+child: Padding(
           padding: const EdgeInsets.all(16),
 
-          child: Row(
+child: Row(
             children: [
               Container(
                 height: 70,
-                width: 70,
+width: 70,
 
-                decoration: BoxDecoration(
+decoration: BoxDecoration(
                   color:
                       Colors.orange.shade50,
 
-                  borderRadius:
+borderRadius:
                       BorderRadius.circular(14),
                 ),
 
-                child: Icon(
+child: Icon(
                   Icons.event_rounded,
-                  color:
+color:
                       Colors.orange.shade700,
-                  size: 32,
+size: 32,
                 ),
               ),
 
-              const SizedBox(
+const SizedBox(
                 width: 14,
               ),
 
-              Expanded(
+Expanded(
                 child: Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
 
-                  children: [
+children: [
                     Text(
                       event.title,
-                      maxLines: 2,
-                      overflow:
+maxLines: 2,
+overflow:
                           TextOverflow.ellipsis,
 
-                      style:
+style:
                           const TextStyle(
                         fontSize: 16,
-                        fontWeight:
+fontWeight:
                             FontWeight.w700,
                       ),
                     ),
 
-                    const SizedBox(
+const SizedBox(
                       height: 6,
                     ),
 
-                    Text(
+Text(
                       event.category,
-                      style: TextStyle(
+style: TextStyle(
                         color:
                             Colors.orange.shade700,
-                        fontWeight:
+fontWeight:
                             FontWeight.w600,
                       ),
                     ),
 
-                    const SizedBox(
+const SizedBox(
                       height: 4,
                     ),
 
-                    Row(
+Row(
                       children: [
                         Icon(
                           Icons.location_on_outlined,
-                          size: 16,
-                          color:
+size: 16,
+color:
                               Colors.grey.shade600,
                         ),
 
-                        const SizedBox(
+const SizedBox(
                           width: 4,
                         ),
 
-                        Expanded(
+Expanded(
                           child: Text(
                             event.location,
-                            maxLines: 1,
-                            overflow:
+maxLines: 1,
+overflow:
                                 TextOverflow.ellipsis,
 
-                            style:
+style:
                                 TextStyle(
                               color: Colors
-                                  .grey
-                                  .shade600,
+.grey
+.shade600,
                             ),
                           ),
                         ),
@@ -693,7 +694,7 @@ class _SearchEventsScreenState
                 ),
               ),
 
-              const Icon(
+const Icon(
                 Icons.chevron_right_rounded,
               ),
             ],
@@ -713,37 +714,37 @@ class _SearchEventsScreenState
         mainAxisAlignment:
             MainAxisAlignment.center,
 
-        children: [
+children: [
           Icon(
             Icons.search_off_rounded,
-            size: 65,
-            color:
+size: 65,
+color:
                 Colors.orange.shade400,
           ),
 
-          const SizedBox(
+const SizedBox(
             height: 16,
           ),
 
-          const Text(
+const Text(
             'No Events Found',
-            style: TextStyle(
+style: TextStyle(
               fontSize: 21,
-              fontWeight:
+fontWeight:
                   FontWeight.w700,
             ),
           ),
 
-          const SizedBox(
+const SizedBox(
             height: 8,
           ),
 
-          Text(
+Text(
             'Try changing your search or filters.',
-            textAlign:
+textAlign:
                 TextAlign.center,
 
-            style: TextStyle(
+style: TextStyle(
               color:
                   Colors.grey.shade600,
             ),
@@ -763,37 +764,37 @@ class _SearchEventsScreenState
         mainAxisAlignment:
             MainAxisAlignment.center,
 
-        children: [
+children: [
           Icon(
             Icons.search_rounded,
-            size: 70,
-            color:
+size: 70,
+color:
                 Colors.orange.shade400,
           ),
 
-          const SizedBox(
+const SizedBox(
             height: 16,
           ),
 
-          const Text(
-            'Search for Events',
-            style: TextStyle(
+const Text(
+            'Search TechCulture',
+style: TextStyle(
               fontSize: 22,
-              fontWeight:
+fontWeight:
                   FontWeight.w700,
             ),
           ),
 
-          const SizedBox(
+const SizedBox(
             height: 8,
           ),
 
-          Text(
-            'Find hackathons, workshops, contests and more.',
-            textAlign:
+Text(
+            'Find tech stories, hackathons, developer meetups, and learning resources.',
+textAlign:
                 TextAlign.center,
 
-            style: TextStyle(
+style: TextStyle(
               color:
                   Colors.grey.shade600,
             ),

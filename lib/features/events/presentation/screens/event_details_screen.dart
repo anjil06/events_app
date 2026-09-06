@@ -7,11 +7,12 @@ import '../../../registrations/data/services/registration_service.dart';
 import '../../../registrations/domain/models/registration_model.dart';
 import '../../../bookmarks/data/services/bookmark_service.dart';
 import '../../../bookmarks/domain/models/bookmark_model.dart';
+import '../../../notifications/data/services/notification_service.dart';
 
 class EventDetailsScreen extends StatefulWidget {
   final EventModel event;
 
-  const EventDetailsScreen({super.key, required this.event});
+const EventDetailsScreen({super.key, required this.event});
 
   @override
   State<EventDetailsScreen> createState() => _EventDetailsScreenState();
@@ -35,17 +36,17 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   Future<void> _checkRegistration() async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null) {
+if (user == null) {
       return;
     }
 
     try {
       final registered = await RegistrationService.instance.isUserRegistered(
         userId: user.uid,
-        eventId: widget.event.id,
+eventId: widget.event.id,
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -61,14 +62,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   final user =
       FirebaseAuth.instance.currentUser;
 
-  if (user == null) {
+if (user == null) {
     _showMessage(
       'Please login to save events.',
     );
     return;
   }
 
-  if (widget.event.id.isEmpty) {
+if (widget.event.id.isEmpty) {
     _showMessage(
       'Unable to save this event.',
     );
@@ -87,21 +88,21 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   try {
     final bookmark =
         await BookmarkService.instance
-            .getBookmark(
+.getBookmark(
       userId: user.uid,
-      eventId: widget.event.id,
+eventId: widget.event.id,
     );
 
-    if (bookmark != null) {
+if (bookmark != null) {
       // REMOVE BOOKMARK
 
       await BookmarkService.instance
-          .removeBookmark(
+.removeBookmark(
         userId: user.uid,
-        eventId: widget.event.id,
+eventId: widget.event.id,
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -119,18 +120,18 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       final newBookmark =
           BookmarkModel(
         id: '',
-        userId: user.uid,
-        eventId: widget.event.id,
-        eventTitle: widget.event.title,
-        savedAt: DateTime.now(),
+userId: user.uid,
+eventId: widget.event.id,
+eventTitle: widget.event.title,
+savedAt: DateTime.now(),
       );
 
       await BookmarkService.instance
-          .addBookmark(
+.addBookmark(
         newBookmark,
       );
 
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -144,7 +145,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       );
     }
   } catch (e) {
-    if (!mounted) {
+if (!mounted) {
       return;
     }
 
@@ -166,11 +167,11 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   final user =
       FirebaseAuth.instance.currentUser;
 
-  if (user == null) {
+if (user == null) {
     return;
   }
 
-  if (widget.event.id.isEmpty) {
+if (widget.event.id.isEmpty) {
     debugPrint(
       'ERROR: Event ID is empty',
     );
@@ -180,12 +181,12 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   try {
     final bookmarked =
         await BookmarkService.instance
-            .isBookmarked(
+.isBookmarked(
       userId: user.uid,
-      eventId: widget.event.id,
+eventId: widget.event.id,
     );
 
-    if (!mounted) {
+if (!mounted) {
       return;
     }
 
@@ -216,37 +217,37 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
 
-      body: CustomScrollView(
+body: CustomScrollView(
         slivers: [
           _buildAppBar(event),
 
-          SliverToBoxAdapter(
+SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
-              child: Column(
+child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+children: [
                   _buildCategory(event),
 
-                  const SizedBox(height: 14),
+const SizedBox(height: 14),
 
-                  _buildTitle(event),
+_buildTitle(event),
 
-                  const SizedBox(height: 20),
+const SizedBox(height: 20),
 
-                  _buildOrganizer(event),
+_buildOrganizer(event),
 
-                  const SizedBox(height: 24),
+const SizedBox(height: 24),
 
-                  _buildEventInfo(event),
+_buildEventInfo(event),
 
-                  const SizedBox(height: 28),
+const SizedBox(height: 28),
 
-                  _buildDescription(event),
+_buildDescription(event),
 
-                  const SizedBox(height: 28),
+const SizedBox(height: 28),
 
-                  _buildRegistrationDeadline(event),
+_buildRegistrationDeadline(event),
                 ],
               ),
             ),
@@ -254,7 +255,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
         ],
       ),
 
-      bottomNavigationBar: _buildRegistrationButton(),
+bottomNavigationBar: _buildRegistrationButton(),
     );
   }
 
@@ -262,57 +263,57 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return SliverAppBar(
       expandedHeight: 250,
 
-      pinned: true,
+pinned: true,
 
-      backgroundColor: AppTheme.primaryOrange,
+backgroundColor: AppTheme.primaryOrange,
 
-      foregroundColor: Colors.white,
+foregroundColor: Colors.white,
 
-      leading: IconButton(
+leading: IconButton(
         onPressed: () {
           Navigator.pop(context);
         },
 
-        icon: const Icon(Icons.arrow_back_rounded),
+icon: const Icon(Icons.arrow_back_rounded),
       ),
 
-      actions: [
+actions: [
         IconButton(
           onPressed: isBookmarkLoading ? null : _toggleBookmark,
 
-          icon: isBookmarkLoading
-              ? const SizedBox(
+icon: isBookmarkLoading
+? const SizedBox(
                   height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
+width: 20,
+child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+color: Colors.white,
                   ),
                 )
-              : Icon(
+: Icon(
                   isSaved
-                      ? Icons.bookmark_rounded
-                      : Icons.bookmark_border_rounded,
+? Icons.bookmark_rounded
+: Icons.bookmark_border_rounded,
                 ),
         ),
 
-        const SizedBox(width: 8),
+const SizedBox(width: 8),
       ],
 
-      flexibleSpace: FlexibleSpaceBar(background: _buildEventImage(event)),
+flexibleSpace: FlexibleSpaceBar(background: _buildEventImage(event)),
     );
   }
 
   Widget _buildEventImage(EventModel event) {
-    if (event.imageUrl.isEmpty) {
+if (event.imageUrl.isEmpty) {
       return Container(
         color: AppTheme.lightOrange,
 
-        child: const Center(
+child: const Center(
           child: Icon(
             Icons.event_rounded,
-            size: 80,
-            color: AppTheme.primaryOrange,
+size: 80,
+color: AppTheme.primaryOrange,
           ),
         ),
       );
@@ -321,31 +322,31 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return Image.network(
       event.imageUrl,
 
-      fit: BoxFit.cover,
+fit: BoxFit.cover,
 
-      errorBuilder: (context, error, stackTrace) {
+errorBuilder: (context, error, stackTrace) {
         return Container(
           color: AppTheme.lightOrange,
 
-          child: const Center(
+child: const Center(
             child: Icon(
               Icons.event_rounded,
-              size: 80,
-              color: AppTheme.primaryOrange,
+size: 80,
+color: AppTheme.primaryOrange,
             ),
           ),
         );
       },
 
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
+loadingBuilder: (context, child, loadingProgress) {
+if (loadingProgress == null) {
           return child;
         }
 
         return Container(
           color: AppTheme.lightOrange,
 
-          child: const Center(
+child: const Center(
             child: CircularProgressIndicator(color: AppTheme.primaryOrange),
           ),
         );
@@ -357,17 +358,17 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
 
-      decoration: BoxDecoration(
+decoration: BoxDecoration(
         color: AppTheme.lightOrange,
-        borderRadius: BorderRadius.circular(10),
+borderRadius: BorderRadius.circular(10),
       ),
 
-      child: Text(
+child: Text(
         event.category,
-        style: const TextStyle(
+style: const TextStyle(
           color: AppTheme.primaryOrange,
-          fontWeight: FontWeight.w700,
-          fontSize: 13,
+fontWeight: FontWeight.w700,
+fontSize: 13,
         ),
       ),
     );
@@ -376,11 +377,11 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   Widget _buildTitle(EventModel event) {
     return Text(
       event.title,
-      style: const TextStyle(
+style: const TextStyle(
         fontSize: 28,
-        height: 1.2,
-        fontWeight: FontWeight.w800,
-        color: Colors.black,
+height: 1.2,
+fontWeight: FontWeight.w800,
+color: Colors.black,
       ),
     );
   }
@@ -390,37 +391,37 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       children: [
         Container(
           height: 44,
-          width: 44,
+width: 44,
 
-          decoration: const BoxDecoration(
+decoration: const BoxDecoration(
             color: AppTheme.lightOrange,
-            shape: BoxShape.circle,
+shape: BoxShape.circle,
           ),
 
-          child: const Icon(
+child: const Icon(
             Icons.business_rounded,
-            color: AppTheme.primaryOrange,
+color: AppTheme.primaryOrange,
           ),
         ),
 
-        const SizedBox(width: 12),
+const SizedBox(width: 12),
 
-        Expanded(
+Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+children: [
               Text(
                 'Organized by',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
 
-              const SizedBox(height: 3),
+const SizedBox(height: 3),
 
-              Text(
+Text(
                 event.organizerName,
-                style: const TextStyle(
+style: const TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w700,
+fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -434,69 +435,69 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return Container(
       padding: const EdgeInsets.all(18),
 
-      decoration: BoxDecoration(
+decoration: BoxDecoration(
         color: Colors.white,
 
-        borderRadius: BorderRadius.circular(18),
+borderRadius: BorderRadius.circular(18),
 
-        border: Border.all(color: Colors.grey.shade200),
+border: Border.all(color: Colors.grey.shade200),
       ),
 
-      child: Column(
+child: Column(
         children: [
           Row(
             children: [
               Expanded(
                 child: _buildInfoItem(
                   icon: Icons.calendar_month_rounded,
-                  title: 'Date',
-                  value: _formatDate(event.date),
+title: 'Date',
+value: _formatDate(event.date),
                 ),
               ),
 
-              Expanded(
+Expanded(
                 child: _buildInfoItem(
                   icon: Icons.access_time_rounded,
-                  title: 'Time',
-                  value: event.time,
+title: 'Time',
+value: event.time,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 20),
+const SizedBox(height: 20),
 
-          Row(
+Row(
             children: [
               Expanded(
                 child: _buildInfoItem(
                   icon: event.isOnline
-                      ? Icons.language_rounded
-                      : Icons.location_on_rounded,
-                  title: 'Location',
-                  value: event.location,
+? Icons.language_rounded
+: Icons.location_on_rounded,
+title: 'Location',
+value: event.location,
                 ),
               ),
 
-              Expanded(
+Expanded(
                 child: _buildInfoItem(
                   icon: Icons.signal_cellular_alt_rounded,
-                  title: 'Level',
-                  value: event.level,
+title: 'Level',
+value: event.level,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 20),
+const SizedBox(height: 20),
 
-          Row(
+Row(
             children: [
               Expanded(
                 child: _buildInfoItem(
                   icon: Icons.code_rounded,
-                  title: 'Domain',
-                  value: event.domain,
+title: 'Domain',
+value: event.domain,
                 ),
               ),
             ],
@@ -508,45 +509,45 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
 
   Widget _buildInfoItem({
     required IconData icon,
-    required String title,
-    required String value,
+ required String title,
+ required String value,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+children: [
         Container(
           height: 38,
-          width: 38,
+width: 38,
 
-          decoration: BoxDecoration(
+decoration: BoxDecoration(
             color: AppTheme.lightOrange,
-            borderRadius: BorderRadius.circular(10),
+borderRadius: BorderRadius.circular(10),
           ),
 
-          child: Icon(icon, color: AppTheme.primaryOrange, size: 20),
+child: Icon(icon, color: AppTheme.primaryOrange, size: 20),
         ),
 
-        const SizedBox(width: 10),
+const SizedBox(width: 10),
 
-        Expanded(
+Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
               ),
 
-              const SizedBox(height: 3),
+const SizedBox(height: 3),
 
-              Text(
+Text(
                 value,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+maxLines: 2,
+overflow: TextOverflow.ellipsis,
 
-                style: const TextStyle(
+style: const TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w700,
+fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -560,20 +561,20 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
 
-      children: [
+children: [
         const Text(
           'About this event',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
 
-        const SizedBox(height: 12),
+const SizedBox(height: 12),
 
-        Text(
+Text(
           event.description,
-          style: TextStyle(
+style: TextStyle(
             fontSize: 15,
-            height: 1.6,
-            color: Colors.grey.shade700,
+height: 1.6,
+color: Colors.grey.shade700,
           ),
         ),
       ],
@@ -584,31 +585,31 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
 
-      decoration: BoxDecoration(
+decoration: BoxDecoration(
         color: AppTheme.lightOrange,
-        borderRadius: BorderRadius.circular(16),
+borderRadius: BorderRadius.circular(16),
       ),
 
-      child: Row(
+child: Row(
         children: [
           const Icon(Icons.timer_outlined, color: AppTheme.primaryOrange),
 
-          const SizedBox(width: 12),
+const SizedBox(width: 12),
 
-          Expanded(
+Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+children: [
                 const Text(
                   'Registration Deadline',
-                  style: TextStyle(fontWeight: FontWeight.w700),
+style: TextStyle(fontWeight: FontWeight.w700),
                 ),
 
-                const SizedBox(height: 4),
+const SizedBox(height: 4),
 
-                Text(
+Text(
                   _formatDate(event.registrationDeadline),
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                 ),
               ],
             ),
@@ -623,38 +624,38 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
 
-        decoration: BoxDecoration(
+decoration: BoxDecoration(
           color: Colors.white,
 
-          boxShadow: [
+boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 12,
-              offset: const Offset(0, -4),
+blurRadius: 12,
+offset: const Offset(0, -4),
             ),
           ],
         ),
 
-        child: SizedBox(
+child: SizedBox(
           height: 54,
 
-          child: ElevatedButton(
+child: ElevatedButton(
             onPressed: isRegistering || isRegistered ? null : _registerForEvent,
 
-            child: isRegistering
-                ? const SizedBox(
+child: isRegistering
+? const SizedBox(
                     height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(
+width: 24,
+child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+color: Colors.white,
                     ),
                   )
-                : Text(
+: Text(
                     isRegistered ? 'Registered ✓' : 'Register Now',
-                    style: const TextStyle(
+style: const TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
+fontWeight: FontWeight.w700,
                     ),
                   ),
           ),
@@ -666,7 +667,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   Future<void> _registerForEvent() async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null) {
+if (user == null) {
       _showMessage('Please login to register for an event.');
       return;
     }
@@ -677,10 +678,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
 
     try {
       final alreadyRegistered = await RegistrationService.instance
-          .isUserRegistered(userId: user.uid, eventId: widget.event.id);
+.isUserRegistered(userId: user.uid, eventId: widget.event.id);
 
-      if (alreadyRegistered) {
-        if (!mounted) {
+if (alreadyRegistered) {
+if (!mounted) {
           return;
         }
 
@@ -696,18 +697,23 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
 
       final registration = RegistrationModel(
         id: '',
-        userId: user.uid,
-        eventId: widget.event.id,
-        eventTitle: widget.event.title,
-        userEmail: user.email ?? '',
-        userName: user.displayName ?? '',
-        registeredAt: DateTime.now(),
-        status: 'registered',
+userId: user.uid,
+eventId: widget.event.id,
+eventTitle: widget.event.title,
+userEmail: user.email ?? '',
+userName: user.displayName ?? '',
+registeredAt: DateTime.now(),
+status: 'registered',
       );
 
       await RegistrationService.instance.registerForEvent(registration);
 
-      if (!mounted) {
+      await NotificationService.instance.notifyRegistrationSuccess(
+        userId: user.uid,
+event: widget.event,
+      );
+
+if (!mounted) {
         return;
       }
 
@@ -718,7 +724,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
 
       _showMessage('Successfully registered for the event! 🎉');
     } catch (e) {
-      if (!mounted) {
+if (!mounted) {
         return;
       }
 
@@ -735,17 +741,17 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   String _formatDate(DateTime date) {
     const months = [
       'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+'Feb',
+'Mar',
+'Apr',
+'May',
+'Jun',
+'Jul',
+'Aug',
+'Sep',
+'Oct',
+'Nov',
+'Dec',
     ];
 
     return '${months[date.month - 1]} '
