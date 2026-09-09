@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/services/cloudinary_upload_service.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../events/data/services/event_services.dart';
 import '../../../events/domain/models/event_model.dart';
 import '../../../notifications/data/services/notification_service.dart';
@@ -470,40 +471,286 @@ if (mounted) setState(() => _isSaving = false);
   Widget build(BuildContext context) {
     final editing = widget.event != null;
     return Scaffold(
-      appBar: AppBar(title: Text(editing ? 'Edit Event' : 'Create Event')),
+      backgroundColor: Colors.grey.shade50,
+appBar: AppBar(
+        title: Text(editing ? 'Edit Event' : 'Create Event'),
+backgroundColor: Colors.white,
+elevation: 0,
+      ),
 body: Form(
         key: _formKey,
 child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
 children: [
-            Text(editing ? 'Update your event details.' : 'Publish an event for the TechCulture community.', style: TextStyle(color: Colors.grey.shade700)),
+            Text(
+              editing ? 'Update your event details' : 'Publish an event 🚀',
+style: const TextStyle(
+                fontSize: 26,
+fontWeight: FontWeight.w800,
+color: Colors.black,
+              ),
+            ),
+const SizedBox(height: 6),
+Text(
+              editing
+? 'Keep the community updated with the latest event info.'
+: 'Share technical workshops, hackathons, and webinars with the TechCulture community.',
+style: TextStyle(
+                fontSize: 14,
+color: Colors.grey.shade600,
+height: 1.4,
+              ),
+            ),
+const SizedBox(height: 24),
+
+            // Card 1: Banner Image
+_buildCardWrapper(
+              title: 'Event Banner',
+subtitle: 'Upload a banner or thumbnail for your event',
+child: _buildImagePicker(),
+            ),
 const SizedBox(height: 20),
-_buildImagePicker(),
-_field(_title, 'Event title', 'e.g. Flutter Workshop 2026'),
-_field(_description, 'Description', 'Tell attendees what to expect', lines: 5),
-_dropdown('Category', _category, _categories, (value) => setState(() => _category = value!)),
-_dropdown('Domain', _domain, _domains, (value) => setState(() => _domain = value!)),
-_dropdown('Experience level', _level, _levels, (value) => setState(() => _level = value!)),
-SwitchListTile(contentPadding: EdgeInsets.zero, title: const Text('Online event'), value: _isOnline, activeThumbColor: AppTheme.primaryOrange, onChanged: (value) => setState(() => _isOnline = value)),
-_field(_location, _isOnline ? 'Meeting link or platform' : 'Venue / location', _isOnline ? 'e.g. Google Meet' : 'e.g. Main auditorium'),
-_field(_time, 'Time', 'e.g. 10:00 AM - 1:00 PM'),
-ListTile(contentPadding: EdgeInsets.zero, title: const Text('Event date'), subtitle: Text(_dateLabel(_date, 'Select a date')), trailing: const Icon(Icons.calendar_month_rounded), onTap: () => _pickDate(deadline: false)),
-ListTile(contentPadding: EdgeInsets.zero, title: const Text('Registration deadline'), subtitle: Text(_dateLabel(_deadline, 'Select a date')), trailing: const Icon(Icons.event_available_rounded), onTap: () => _pickDate(deadline: true)),
-const SizedBox(height: 16),
-ElevatedButton(onPressed: _isSaving ? null : _save, child: _isSaving ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : Text(editing ? 'Save Changes' : 'Publish Event')),
+
+            // Card 2: Basic Information
+_buildCardWrapper(
+              title: 'Basic Details',
+subtitle: 'Event title, summary, category and domain',
+child: Column(
+                children: [
+                  _field(_title, 'Event title', 'e.g. Flutter Workshop 2026', icon: Icons.title_rounded),
+_field(_description, 'Description', 'Tell attendees what to expect...', lines: 4, icon: Icons.description_outlined),
+_dropdown('Category', _category, _categories, Icons.category_outlined, (value) => setState(() => _category = value!)),
+_dropdown('Domain', _domain, _domains, Icons.domain_rounded, (value) => setState(() => _domain = value!)),
+_dropdown('Experience level', _level, _levels, Icons.trending_up_rounded, (value) => setState(() => _level = value!)),
+                ],
+              ),
+            ),
+const SizedBox(height: 20),
+
+            // Card 3: Date, Venue & Timing
+_buildCardWrapper(
+              title: 'Date & Location',
+subtitle: 'Set schedule and physical/virtual location',
+child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+decoration: BoxDecoration(
+                      color: Colors.white,
+borderRadius: BorderRadius.circular(14),
+border: Border.all(color: Colors.grey.shade300, width: 1.2),
+                    ),
+child: SwitchListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+title: const Text(
+                        'Online Event',
+style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+subtitle: Text(
+                        _isOnline ? 'Virtual event via meeting link' : 'In-person event at physical venue',
+style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                      ),
+secondary: Icon(
+                        _isOnline ? Icons.videocam_rounded : Icons.location_on_rounded,
+color: AppTheme.primaryOrange,
+                      ),
+value: _isOnline,
+activeThumbColor: AppTheme.primaryOrange,
+onChanged: (value) => setState(() => _isOnline = value),
+                    ),
+                  ),
+_field(
+                    _location,
+_isOnline ? 'Meeting link or platform' : 'Venue / location',
+_isOnline ? 'e.g. Google Meet, Zoom' : 'e.g. Main Auditorium, Campus Hall',
+icon: _isOnline ? Icons.link_rounded : Icons.place_outlined,
+                  ),
+_field(
+                    _time,
+'Time',
+'e.g. 10:00 AM - 1:00 PM',
+icon: Icons.schedule_rounded,
+                  ),
+Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+child: _dateTile(
+                      label: 'Event Date',
+date: _date,
+icon: Icons.calendar_month_rounded,
+onTap: () => _pickDate(deadline: false),
+                    ),
+                  ),
+_dateTile(
+                    label: 'Registration Deadline',
+date: _deadline,
+icon: Icons.event_available_rounded,
+onTap: () => _pickDate(deadline: true),
+                  ),
+                ],
+              ),
+            ),
+const SizedBox(height: 28),
+
+            // Submit Button
+AppButton(
+              text: editing ? 'Save Changes' : 'Publish Event',
+onPressed: _isSaving ? null : _save,
+isLoading: _isSaving,
+            ),
+const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
 
-  Widget _field(TextEditingController controller, String label, String hint, {int lines = 1, bool required = true}) => Padding(
-    padding: const EdgeInsets.only(bottom: 16),
-child: TextFormField(controller: controller, validator: required ? _required : null, maxLines: lines, decoration: InputDecoration(labelText: label, hintText: hint)),
-  );
+  Widget _buildCardWrapper({
+    required String title,
+ required String subtitle,
+ required Widget child,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+decoration: BoxDecoration(
+        color: Colors.white,
+borderRadius: BorderRadius.circular(18),
+border: Border.all(color: Colors.grey.shade200),
+boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+blurRadius: 10,
+offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+children: [
+          Text(
+            title,
+style: const TextStyle(
+              fontSize: 17,
+fontWeight: FontWeight.w700,
+color: Colors.black87,
+            ),
+          ),
+const SizedBox(height: 2),
+Text(
+            subtitle,
+style: TextStyle(
+              fontSize: 13,
+color: Colors.grey.shade600,
+            ),
+          ),
+const SizedBox(height: 16),
+child,
+        ],
+      ),
+    );
+  }
 
-  Widget _dropdown(String label, String value, List<String> items, ValueChanged<String?> onChanged) => Padding(
-    padding: const EdgeInsets.only(bottom: 16),
-child: DropdownButtonFormField<String>(initialValue: value, decoration: InputDecoration(labelText: label), items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(), onChanged: onChanged),
-  );
+  Widget _dateTile({
+    required String label,
+ required DateTime? date,
+ required IconData icon,
+ required VoidCallback onTap,
+  }) {
+    final hasValue = date != null;
+    return InkWell(
+      onTap: onTap,
+borderRadius: BorderRadius.circular(14),
+child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+decoration: BoxDecoration(
+          color: Colors.white,
+borderRadius: BorderRadius.circular(14),
+border: Border.all(
+            color: hasValue ? AppTheme.primaryOrange : Colors.grey.shade300,
+width: 1.2,
+          ),
+        ),
+child: Row(
+          children: [
+            Icon(icon, color: AppTheme.primaryOrange, size: 22),
+const SizedBox(width: 14),
+Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+mainAxisSize: MainAxisSize.min,
+children: [
+                  Text(
+                    label,
+style: TextStyle(
+                      fontSize: 12,
+color: Colors.grey.shade600,
+fontWeight: FontWeight.w500,
+                    ),
+                  ),
+const SizedBox(height: 2),
+Text(
+                    _dateLabel(date, 'Tap to select date'),
+style: TextStyle(
+                      fontSize: 15,
+color: hasValue ? Colors.black87 : Colors.grey.shade400,
+fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+Icon(
+              Icons.arrow_drop_down_rounded,
+color: Colors.grey.shade600,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _field(
+    TextEditingController controller,
+ String label,
+ String hint, {
+    int lines = 1,
+ bool required = true,
+ IconData? icon,
+  }) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+child: TextFormField(
+          controller: controller,
+validator: required ? _required : null,
+maxLines: lines,
+decoration: InputDecoration(
+            labelText: label,
+hintText: hint,
+prefixIcon: icon == null
+? null
+: Icon(icon, color: AppTheme.primaryOrange, size: 22),
+          ),
+        ),
+      );
+
+  Widget _dropdown(
+    String label,
+ String value,
+ List<String> items,
+ IconData icon,
+ ValueChanged<String?> onChanged,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+child: DropdownButtonFormField<String>(
+          initialValue: value,
+decoration: InputDecoration(
+            labelText: label,
+prefixIcon: Icon(icon, color: AppTheme.primaryOrange, size: 22),
+          ),
+items: items
+.map((item) => DropdownMenuItem(value: item, child: Text(item)))
+.toList(),
+onChanged: onChanged,
+        ),
+      );
 }

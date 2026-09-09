@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final Map<String, bool> _savedEvents = {};
   final Map<String, bool> _bookmarkLoading = {};
 
+  late final Stream<List<EventModel>> _eventsStream;
+  StreamSubscription<List<BookmarkModel>>? _bookmarkSubscription;
+
   final List<String> _categories = [
     'All',
 'Hackathons',
@@ -43,41 +47,42 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _eventsStream = EventService.instance.getEvents();
     _checkUpcomingReminders();
+    _setupBookmarkSubscription();
+  }
+
+  void _setupBookmarkSubscription() {
+    final user = FirebaseAuth.instance.currentUser;
+if (user == null) return;
+    _bookmarkSubscription = BookmarkService.instance
+.getUserBookmarks(user.uid)
+.listen((bookmarks) {
+if (!mounted) return;
+      final newMap = <String, bool>{};
+      for (final b in bookmarks) {
+        newMap[b.eventId] = true;
+      }
+      setState(() {
+        _savedEvents
+..clear()
+..addAll(newMap);
+      });
+    }, onError: (e) {
+      debugPrint('BOOKMARK SUBSCRIPTION ERROR: $e');
+    });
+  }
+
+  @override
+  void dispose() {
+    _bookmarkSubscription?.cancel();
+    super.dispose();
   }
 
   void _checkUpcomingReminders() {
     final user = FirebaseAuth.instance.currentUser;
 if (user != null) {
       NotificationService.instance.checkAndNotifyUpcomingEvents(userId: user.uid);
-    }
-  }
-
-  Stream<List<EventModel>> get _eventsStream {
-    return EventService.instance.getEvents();
-  }
-  Future<void> _loadSavedEvents(List<EventModel> events) async {
-    final user = FirebaseAuth.instance.currentUser;
-
-if (user == null) return;
-
-    for (final event in events) {
-if (event.id.isEmpty) continue;
-
-      try {
-        final isSaved = await BookmarkService.instance.isBookmarked(
-          userId: user.uid,
-eventId: event.id,
-        );
-
-if (!mounted) return;
-
-        setState(() {
-          _savedEvents[event.id] = isSaved;
-        });
-      } catch (e) {
-        debugPrint('LOAD BOOKMARK ERROR: $e');
-      }
     }
   }
 
@@ -218,80 +223,55 @@ style: TextStyle(color: Colors.grey.shade600),
 
 appBar: const HomeAppBar(),
 
-body: RefreshIndicator(
-        color: AppTheme.primaryOrange,
-onRefresh: () async {
-          _checkUpcomingReminders();
-          await Future.delayed(const Duration(milliseconds: 800));
-        },
-
-child: StreamBuilder<List<EventModel>>(
-          stream: _eventsStream,
-
+body: StreamBuilder<List<EventModel>>(
+        stream: _eventsStream,
 builder: (context, snapshot) {
-if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-if (snapshot.hasError) {
-              return _buildErrorState(snapshot.error.toString());
-            }
-
-            final events = snapshot.data ?? [];
-
-if (events.isEmpty) {
-              return _buildEmptyState();
-            }
-
-if (_savedEvents.isEmpty) {
-              _loadSavedEvents(events);
-            }
-
-            return RefreshIndicator(
-              color: AppTheme.primaryOrange,
-
-onRefresh: () async {
-                await Future.delayed(const Duration(milliseconds: 500));
-              },
-
-child: ListView(
-                padding: const EdgeInsets.only(bottom: 100),
-
-children: [
-                  const WelcomeSection(),
-
-const SizedBox(height: 20),
-
-const HomeSearchBar(),
-
-const SizedBox(height: 28),
-
-_buildTrendingTech(),
-
-const SizedBox(height: 28),
-
-_buildLatestStories(),
-
-const SizedBox(height: 28),
-
-_buildCategories(),
-
-const SizedBox(height: 24),
-
-_buildFeaturedEvents(events),
-
-const SizedBox(height: 28),
-
-_buildUpcomingEvents(events),
-
-const SizedBox(height: 28),
-
-_buildTrendingEvents(events),
-                ],
+if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppTheme.primaryOrange,
               ),
             );
-          },
-        ),
+          }
+
+if (snapshot.hasError && !snapshot.hasData) {
+            return _buildErrorState(snapshot.error.toString());
+          }
+
+          final events = snapshot.data ?? [];
+
+if (events.isEmpty) {
+            return _buildEmptyState();
+          }
+
+          return RefreshIndicator(
+            color: AppTheme.primaryOrange,
+onRefresh: () async {
+              _checkUpcomingReminders();
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
+child: ListView(
+              padding: const EdgeInsets.only(bottom: 100),
+children: [
+                const WelcomeSection(),
+const SizedBox(height: 20),
+const HomeSearchBar(),
+const SizedBox(height: 28),
+_buildTrendingTech(),
+const SizedBox(height: 28),
+_buildLatestStories(),
+const SizedBox(height: 28),
+_buildCategories(),
+const SizedBox(height: 24),
+_buildFeaturedEvents(events),
+const SizedBox(height: 28),
+_buildUpcomingEvents(events),
+const SizedBox(height: 28),
+_buildTrendingEvents(events),
+              ],
+            ),
+          );
+        },
       ),
 
 bottomNavigationBar: _buildBottomNavigationBar(),

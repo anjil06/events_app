@@ -137,32 +137,27 @@ if (value.length < 6) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
+      backgroundColor: const Color(0xFFF9FAFB),
 body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-vertical: 32,
+                horizontal: 20,
+vertical: 24,
               ),
 child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - 64,
+                  minHeight: constraints.maxHeight - 48,
                 ),
 child: Form(
                   key: _formKey,
-
 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
 children: [
-                      const SizedBox(height: 20),
-
+                      const SizedBox(height: 12),
 _buildLogo(),
-
-const SizedBox(height: 32),
-
+const SizedBox(height: 24),
 const Text(
                         'Welcome Back 👋',
 style: TextStyle(
@@ -171,9 +166,7 @@ fontWeight: FontWeight.w800,
 color: Colors.black,
                         ),
                       ),
-
 const SizedBox(height: 8),
-
 Text(
                         'Login to connect with the TechCulture community.',
 style: TextStyle(
@@ -181,54 +174,62 @@ style: TextStyle(
 color: Colors.grey.shade600,
                         ),
                       ),
-
-const SizedBox(height: 36),
-
-AppTextField(
-                        controller: _emailController,
+const SizedBox(height: 28),
+Container(
+                        padding: const EdgeInsets.all(22),
+decoration: BoxDecoration(
+                          color: Colors.white,
+borderRadius: BorderRadius.circular(20),
+border: Border.all(color: Colors.grey.shade200),
+boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.03),
+blurRadius: 12,
+offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+child: Column(
+                          children: [
+                            AppTextField(
+                              controller: _emailController,
 label: 'Email',
 hint: 'Enter your email',
 keyboardType: TextInputType.emailAddress,
 prefixIcon: Icons.email_outlined,
 validator: _validateEmail,
-                      ),
-
-const SizedBox(height: 18),
-
-_buildPasswordField(),
-
-const SizedBox(height: 12),
-
-Align(
-                        alignment: Alignment.centerRight,
-child: TextButton(
-                          onPressed: () {
-                            context.push(
-                              AppRoutes.forgotPassword,
-                            );
-                          },
-child: const Text(
-                            'Forgot Password?',
-style: TextStyle(
-                              color: AppTheme.primaryOrange,
-fontWeight: FontWeight.w600,
                             ),
-                          ),
-                        ),
-                      ),
-
-const SizedBox(height: 20),
-
+const SizedBox(height: 18),
+_buildPasswordField(),
+const SizedBox(height: 10),
+Align(
+                              alignment: Alignment.centerRight,
+child: TextButton(
+                                onPressed: () {
+                                  context.push(
+                                    AppRoutes.forgotPassword,
+                                  );
+                                },
+child: const Text(
+                                  'Forgot Password?',
+style: TextStyle(
+                                    color: AppTheme.primaryOrange,
+fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+const SizedBox(height: 14),
 AppButton(
-                        text: 'Login',
+                              text: 'Login',
 onPressed: _login,
 isLoading: _isLoading,
+                            ),
+                          ],
+                        ),
                       ),
-
 const SizedBox(height: 28),
-
 _buildRegisterSection(),
-
 const SizedBox(height: 20),
                     ],
                   ),
@@ -243,12 +244,12 @@ const SizedBox(height: 20),
 
   Widget _buildLogo() {
     return Container(
-      height: 70,
-width: 70,
+      height: 64,
+width: 64,
 padding: const EdgeInsets.all(12),
 decoration: BoxDecoration(
         color: AppTheme.lightOrange,
-borderRadius: BorderRadius.circular(20),
+borderRadius: BorderRadius.circular(18),
       ),
 child: Image.asset(
         'assets/images/techculture_icon_mark.png',
@@ -258,27 +259,24 @@ fit: BoxFit.contain,
   }
 
   Widget _buildPasswordField() {
-    return TextFormField(
+    return AppTextField(
       controller: _passwordController,
+label: 'Password',
+hint: 'Enter your password',
 obscureText: _obscurePassword,
 validator: _validatePassword,
-decoration: InputDecoration(
-        labelText: 'Password',
-hintText: 'Enter your password',
-prefixIcon: const Icon(
-          Icons.lock_outline_rounded,
-        ),
+prefixIcon: Icons.lock_outline_rounded,
 suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
+        onPressed: () {
+          setState(() {
+            _obscurePassword = !_obscurePassword;
+          });
+        },
 icon: Icon(
-            _obscurePassword
+          _obscurePassword
 ? Icons.visibility_outlined
 : Icons.visibility_off_outlined,
-          ),
+color: Colors.grey.shade600,
         ),
       ),
     );
