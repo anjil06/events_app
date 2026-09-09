@@ -34,11 +34,18 @@ static const _categories = [
   ];
 
   String _selectedCategory = 'All';
+  late final Stream<List<EventModel>> _eventsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _eventsStream = EventService.instance.getEvents();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: const Color(0xFFF9FAFB),
 
 appBar: AppBar(
         title: const Text(
@@ -62,10 +69,10 @@ const SizedBox(width: 8),
       ),
 
 body: StreamBuilder<List<EventModel>>(
-        stream: EventService.instance.getEvents(),
+        stream: _eventsStream,
 
 builder: (context, snapshot) {
-if (snapshot.connectionState == ConnectionState.waiting) {
+if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(
                 color: AppTheme.primaryOrange,

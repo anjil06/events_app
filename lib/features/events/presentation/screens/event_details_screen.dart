@@ -215,7 +215,7 @@ if (!mounted) {
     final event = widget.event;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: const Color(0xFFF9FAFB),
 
 body: CustomScrollView(
         slivers: [

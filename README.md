@@ -1,22 +1,32 @@
 # TechCulture 🚀
 
+A premier technology culture and developer community platform built with Flutter. Discover tech trends, explore developer stories, and connect with communities and hackathons.
 A premier technology culture, developer community, and event discovery platform built with **Flutter**, **Firebase**, **Node.js**, and **Cloudinary**. Discover emerging tech trends, explore developer stories, RSVP to technical workshops, hackathons, and webinars, and manage community events seamlessly.
 
+## Getting Started
 ---
 
+This project is a starting point for a Flutter application.
 ## 🌟 Key Features
 
+A few resources to get you started if this is your first Flutter project:
 ### 🎪 1. Event Discovery & Exploration
 * **Featured & Trending Events**: Interactive carousels highlighting upcoming tech events and trending topics.
 * **Category Filtering**: Filter events by `Hackathons`, `Coding`, `Workshops`, `Webinars`, and `Meetups`.
 * **Instant Search**: Search events in real time by title, organizer, category, or venue.
 * **Responsive Layouts**: Designed to look clean and balanced across all screen sizes with zero layout overflow errors.
 
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
 ### 📝 2. Event Registration & Bookmarking
 * **One-Tap RSVP**: Register for events with real-time Firestore synchronization and status tracking.
 * **Interactive Bookmarks**: Save events to your personal reading/attending list with instant UI feedback.
 * **Registered Events Dashboard**: Track upcoming and past event registrations in one place.
 
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
 ### 🔔 3. Real-Time Notifications System
 * **Registration Confirmations**: Automatic in-app notification confirming registration details, event schedule, and venue.
 * **24-Hour Event Reminders**: Smart background scanner detects registered events starting within 24 hours and issues starting-soon reminders.

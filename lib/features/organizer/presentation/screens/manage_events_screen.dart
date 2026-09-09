@@ -17,7 +17,8 @@ const ManageEventsScreen({super.key});
     final user = FirebaseAuth.instance.currentUser;
 if (user == null) return const Scaffold(body: Center(child: Text('Please log in to manage events.')));
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage My Events')),
+      backgroundColor: const Color(0xFFF9FAFB),
+appBar: AppBar(title: const Text('Manage My Events')),
 floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(AppRoutes.eventForm),
 icon: const Icon(Icons.add_rounded), label: const Text('Create event'),
@@ -25,14 +26,14 @@ icon: const Icon(Icons.add_rounded), label: const Text('Create event'),
 body: StreamBuilder<List<EventModel>>(
         stream: EventService.instance.getEventsByOrganizer(user.uid),
 builder: (context, snapshot) {
-if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
+if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator(color: AppTheme.primaryOrange));
 if (snapshot.hasError) return const Center(child: Text('Unable to load your events.'));
           final events = snapshot.data ?? [];
 if (events.isEmpty) return _EmptyEvents(onCreate: () => context.push(AppRoutes.eventForm));
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
 itemCount: events.length,
-separatorBuilder: (_, index) => const SizedBox(height: 12),
+separatorBuilder: (_, index) => const SizedBox(height: 14),
 itemBuilder: (context, index) => _ManagedEventCard(event: events[index]),
           );
         },
@@ -47,8 +48,20 @@ const _ManagedEventCard({required this.event});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+borderRadius: BorderRadius.circular(18),
+border: Border.all(color: Colors.grey.shade200),
+boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+blurRadius: 10,
+offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+child: Padding(
         padding: const EdgeInsets.all(16),
 child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

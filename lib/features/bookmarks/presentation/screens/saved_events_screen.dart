@@ -25,7 +25,7 @@ if (user == null) {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: const Color(0xFFF9FAFB),
 
 appBar: AppBar(
         elevation: 0,

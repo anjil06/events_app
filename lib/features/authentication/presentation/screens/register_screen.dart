@@ -197,9 +197,10 @@ if (value != _passwordController.text) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF9FAFB),
 appBar: AppBar(
         backgroundColor: Colors.white,
+elevation: 0,
 title: const Text('Create Account'),
       ),
 body: SafeArea(
@@ -207,12 +208,12 @@ body: SafeArea(
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-vertical: 20,
+                horizontal: 20,
+vertical: 24,
               ),
 child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - 40,
+                  minHeight: constraints.maxHeight - 48,
                 ),
 child: Form(
                   key: _formKey,
@@ -220,49 +221,55 @@ child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
 children: [
                       _buildHeader(),
-
-const SizedBox(height: 32),
-
-AppTextField(
-                        controller: _nameController,
+const SizedBox(height: 28),
+Container(
+                        padding: const EdgeInsets.all(22),
+decoration: BoxDecoration(
+                          color: Colors.white,
+borderRadius: BorderRadius.circular(20),
+border: Border.all(color: Colors.grey.shade200),
+boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.03),
+blurRadius: 12,
+offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+child: Column(
+                          children: [
+                            AppTextField(
+                              controller: _nameController,
 label: 'Full Name',
 hint: 'Enter your full name',
 prefixIcon: Icons.person_outline,
 keyboardType: TextInputType.name,
 validator: _validateName,
-                      ),
-
+                            ),
 const SizedBox(height: 18),
-
 AppTextField(
-                        controller: _emailController,
+                              controller: _emailController,
 label: 'Email',
 hint: 'Enter your email',
 prefixIcon: Icons.email_outlined,
 keyboardType: TextInputType.emailAddress,
 validator: _validateEmail,
-                      ),
-
+                            ),
 const SizedBox(height: 18),
-
 _buildPasswordField(),
-
 const SizedBox(height: 18),
-
 _buildConfirmPasswordField(),
-
 const SizedBox(height: 28),
-
 AppButton(
-                        text: 'Create Account',
+                              text: 'Create Account',
 onPressed: _register,
 isLoading: _isLoading,
+                            ),
+                          ],
+                        ),
                       ),
-
 const SizedBox(height: 24),
-
 _buildLoginSection(),
-
 const SizedBox(height: 20),
                     ],
                   ),
@@ -320,55 +327,48 @@ color: Colors.grey.shade600,
   }
 
   Widget _buildPasswordField() {
-    return TextFormField(
+    return AppTextField(
       controller: _passwordController,
+label: 'Password',
+hint: 'Create a password',
 obscureText: _obscurePassword,
 validator: _validatePassword,
-decoration: InputDecoration(
-        labelText: 'Password',
-hintText: 'Create a password',
-prefixIcon: const Icon(
-          Icons.lock_outline_rounded,
-        ),
+prefixIcon: Icons.lock_outline_rounded,
 suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
+        onPressed: () {
+          setState(() {
+            _obscurePassword = !_obscurePassword;
+          });
+        },
 icon: Icon(
-            _obscurePassword
+          _obscurePassword
 ? Icons.visibility_outlined
 : Icons.visibility_off_outlined,
-          ),
+color: Colors.grey.shade600,
         ),
       ),
     );
   }
 
   Widget _buildConfirmPasswordField() {
-    return TextFormField(
+    return AppTextField(
       controller: _confirmPasswordController,
+label: 'Confirm Password',
+hint: 'Re-enter your password',
 obscureText: _obscureConfirmPassword,
 validator: _validateConfirmPassword,
-decoration: InputDecoration(
-        labelText: 'Confirm Password',
-hintText: 'Re-enter your password',
-prefixIcon: const Icon(
-          Icons.lock_reset_outlined,
-        ),
+prefixIcon: Icons.lock_reset_outlined,
 suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _obscureConfirmPassword =
-                  !_obscureConfirmPassword;
-            });
-          },
+        onPressed: () {
+          setState(() {
+            _obscureConfirmPassword = !_obscureConfirmPassword;
+          });
+        },
 icon: Icon(
-            _obscureConfirmPassword
+          _obscureConfirmPassword
 ? Icons.visibility_outlined
 : Icons.visibility_off_outlined,
-          ),
+color: Colors.grey.shade600,
         ),
       ),
     );

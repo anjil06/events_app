@@ -4,6 +4,7 @@ import 'package:techscope/core/routes/app_routes.dart';
 
 import '../../../events/data/services/event_services.dart';
 import '../../../events/domain/models/event_model.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class SearchEventsScreen extends StatefulWidget {
 const SearchEventsScreen({
@@ -176,7 +177,8 @@ if (!mounted) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: const Color(0xFFF9FAFB),
+appBar: AppBar(
         title: const Text(
           'Search TechCulture',
         ),
@@ -211,14 +213,12 @@ Expanded(
     return TextField(
       controller: _searchController,
 onChanged: _onSearchChanged,
-
 decoration: InputDecoration(
         hintText: 'Search articles, events, communities, resources...',
-
 prefixIcon: const Icon(
           Icons.search_rounded,
+color: AppTheme.primaryOrange,
         ),
-
 suffixIcon: _searchQuery.isNotEmpty
 ? IconButton(
                 onPressed: () {
@@ -242,23 +242,26 @@ icon: const Icon(
                 ),
               )
 : null,
-
 filled: true,
-
+fillColor: Colors.white,
 border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(14),
+borderSide: BorderSide(
+            color: Colors.grey.shade300,
+width: 1.2,
+          ),
         ),
-
 enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(14),
+borderSide: BorderSide(
+            color: Colors.grey.shade300,
+width: 1.2,
+          ),
         ),
-
-focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-borderSide: const BorderSide(
-            color: Colors.orange,
+focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+borderSide: BorderSide(
+            color: AppTheme.primaryOrange,
 width: 2,
           ),
         ),
@@ -598,24 +601,38 @@ child: Padding(
 
 child: Row(
             children: [
-              Container(
-                height: 70,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+child: event.imageUrl.isNotEmpty
+? Image.network(
+                        event.imageUrl,
+height: 70,
 width: 70,
-
-decoration: BoxDecoration(
-                  color:
-                      Colors.orange.shade50,
-
-borderRadius:
-                      BorderRadius.circular(14),
-                ),
-
+fit: BoxFit.cover,
+errorBuilder: (context, error, stackTrace) => Container(
+                          height: 70,
+width: 70,
+color: Colors.orange.shade50,
 child: Icon(
-                  Icons.event_rounded,
-color:
-                      Colors.orange.shade700,
+                            Icons.event_rounded,
+color: Colors.orange.shade700,
 size: 32,
-                ),
+                          ),
+                        ),
+                      )
+: Container(
+                        height: 70,
+width: 70,
+decoration: BoxDecoration(
+                          color: Colors.orange.shade50,
+borderRadius: BorderRadius.circular(14),
+                        ),
+child: Icon(
+                          Icons.event_rounded,
+color: Colors.orange.shade700,
+size: 32,
+                        ),
+                      ),
               ),
 
 const SizedBox(
