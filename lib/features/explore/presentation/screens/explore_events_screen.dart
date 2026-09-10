@@ -21,16 +21,18 @@ const ExploreEventsScreen({super.key});
 class _ExploreEventsScreenState extends State<ExploreEventsScreen> {
 static const _categories = [
     'All',
-'AI',
-'Web Development',
-'App Development',
-'Cybersecurity',
-'Cloud',
-'Data Science',
-'Blockchain',
-'DevOps',
-'Programming',
-'Startups',
+'College Fests',
+'Technical & Hackathons',
+'Coding & AI',
+'Dance',
+'Music',
+'Drama & Theatre',
+'Web & App Dev',
+'Robotics & Gaming',
+'Fashion Show',
+'Fine Arts',
+'Literary & Debates',
+'Concerts & Pro-Nights',
   ];
 
   String _selectedCategory = 'All';
@@ -95,10 +97,20 @@ fontWeight: FontWeight.w600,
           final events = (snapshot.data ?? []).where((event) {
 if (_selectedCategory == 'All') return true;
             final cat = _selectedCategory.toLowerCase();
-            return event.category.toLowerCase() == cat ||
-                event.domain.toLowerCase().contains(cat) ||
-                (cat == 'ai' && event.domain.toLowerCase().contains('ai'));
-          }).toList();
+            final eventCat = event.category.toLowerCase();
+            final eventDomain = event.domain.toLowerCase();
+            final eventTitle = event.title.toLowerCase();
+            return eventCat.contains(cat) ||
+                cat.contains(eventCat) ||
+                eventDomain.contains(cat) ||
+                cat.contains(eventDomain) ||
+                eventTitle.contains(cat);
+          }).toList()
+..sort((a, b) {
+              final aTime = a.createdAt ?? a.date;
+              final bTime = b.createdAt ?? b.date;
+              return bTime.compareTo(aTime);
+            });
 
           return Column(
             children: [

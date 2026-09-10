@@ -37,11 +37,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<String> _categories = [
     'All',
+'College Fests',
 'Hackathons',
-'Coding',
-'Workshops',
-'Webinars',
-'Meetups',
+'Dance',
+'Coding & AI',
+'Music',
+'Drama & Theatre',
+'Robotics & Tech',
+'Fashion Show',
+'Fine Arts',
+'Gaming & Esports',
   ];
 
   @override
@@ -282,7 +287,7 @@ bottomNavigationBar: _buildBottomNavigationBar(),
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
 children: [
-        const SectionHeader(title: 'Trending Tech 🔥'),
+        const SectionHeader(title: 'Trending in Tech & Culture 🔥'),
 const SizedBox(height: 14),
 SizedBox(
           height: 130,
@@ -393,7 +398,7 @@ color: Colors.grey.shade600,
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
 children: [
-        const SectionHeader(title: 'Latest Tech Stories 📖'),
+        const SectionHeader(title: 'Latest Fest & Tech Stories 📖'),
 const SizedBox(height: 14),
 SizedBox(
           height: 240,
@@ -611,11 +616,12 @@ onBookmarkPressed: () {
   Widget _buildUpcomingEvents(List<EventModel> events) {
     final filteredEvents = _selectedCategory == 0
 ? events
-: events
-.where(
-(event) => event.category == _categories[_selectedCategory],
-              )
-.toList();
+: events.where((event) {
+            final sel = _categories[_selectedCategory].toLowerCase();
+            final cat = event.category.toLowerCase();
+            final dom = event.domain.toLowerCase();
+            return cat.contains(sel) || sel.contains(cat) || dom.contains(sel);
+          }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

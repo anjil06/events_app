@@ -5,7 +5,7 @@ import 'package:techscope/core/routes/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class HomeSearchBar extends StatelessWidget {
-  const HomeSearchBar({super.key});
+const HomeSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,34 +14,34 @@ class HomeSearchBar extends StatelessWidget {
         horizontal: 20,
       ),
 
-      child: GestureDetector(
-        onTap: (){
+child: GestureDetector(
+        onTap: () {
           context.push(AppRoutes.search);
         },
-        child: AbsorbPointer(
+child: AbsorbPointer(
           child: TextField(
             readOnly: true,
           
-            decoration: InputDecoration(
-              hintText: 'Search events, contests, workshops...',
+decoration: InputDecoration(
+              hintText: 'Search fests, hackathons, coding, dance, music...',
           
-              prefixIcon: const Icon(
+prefixIcon: const Icon(
                 Icons.search_rounded,
-                color: AppTheme.primaryOrange,
+color: AppTheme.primaryOrange,
               ),
           
-              suffixIcon: Container(
+suffixIcon: Container(
                 margin: const EdgeInsets.all(6),
           
-                decoration: BoxDecoration(
+decoration: BoxDecoration(
                   color: AppTheme.primaryOrange,
-                  borderRadius: BorderRadius.circular(10),
+borderRadius: BorderRadius.circular(10),
                 ),
           
-                child: const Icon(
+child: const Icon(
                   Icons.tune_rounded,
-                  color: Colors.white,
-                  size: 20,
+color: Colors.white,
+size: 20,
                 ),
               ),
             ),

@@ -439,7 +439,7 @@ color: Color(0xFF222222),
 const SizedBox(height: 8),
 
 Text(
-              'Save technology articles, events, posts, and resources you are interested in and find them here anytime.',
+              'Save college fests, cultural competitions, and campus events you are interested in and find them here anytime.',
 textAlign: TextAlign.center,
 style: TextStyle(
                 fontSize: 14,

@@ -35,16 +35,26 @@ class _SearchEventsScreenState
   String? _selectedLevel;
 
 static const List<String> _domains = [
-    'AI & ML',
-'Web Development',
-'App Development',
-'Data Science',
-'Cyber Security',
-'Cloud Computing',
-'Blockchain',
-'DevOps',
-'Programming',
-'Startups',
+    'Inter-College Fest',
+'Hackathon & Ideathon',
+'Competitive Coding',
+'Web & App Development',
+'AI & Machine Learning',
+'Cloud & Cyber Security',
+'Robotics & Embedded',
+'Solo / Group Dance',
+'Battle of the Bands',
+'Classical & Vocals',
+'Street Play (Nukkad)',
+'Stage Play & Skit',
+'Runway & Fashion Walk',
+'Painting & Sketching',
+'Photography & Film',
+'Debate & Quiz',
+'Stand-up & Poetry',
+'EDM & DJ Night',
+'Esports Championship',
+'Campus Carnival',
   ];
 
   bool get _hasActiveFilters {
@@ -214,7 +224,7 @@ Expanded(
       controller: _searchController,
 onChanged: _onSearchChanged,
 decoration: InputDecoration(
-        hintText: 'Search articles, events, communities, resources...',
+        hintText: 'Search hackathons, coding, college fests, dance, music...',
 prefixIcon: const Icon(
           Icons.search_rounded,
 color: AppTheme.primaryOrange,
@@ -807,7 +817,7 @@ const SizedBox(
           ),
 
 Text(
-            'Find tech stories, hackathons, developer meetups, and learning resources.',
+            'Find hackathons, coding contests, college fests, dance battles, and concerts.',
 textAlign:
                 TextAlign.center,
 

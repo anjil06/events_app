@@ -314,8 +314,8 @@ color: Colors.black,
 const SizedBox(height: 8),
 
 Text(
-          'Create an account and connect with '
-          'the global developer culture.',
+          'Create an account to discover, participate, '
+          'and celebrate college fests and cultural events.',
 style: TextStyle(
             fontSize: 15,
 height: 1.5,
