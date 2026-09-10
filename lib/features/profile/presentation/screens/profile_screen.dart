@@ -680,7 +680,7 @@ fit: BoxFit.contain,
 children: const[
         SizedBox(height: 16),
 Text(
-          'TechCulture is a modern technology culture and developer community platform connecting builders to tech trends, developer communities, programming resources, and premier tech events.',
+          'TechCulture connects college students, artists, performers, and fest organizers to vibrant cultural events, college fests, competitions, and campus celebrations.',
         ),
       ],
     );

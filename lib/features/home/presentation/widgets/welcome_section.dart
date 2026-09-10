@@ -19,7 +19,7 @@ child: Column(
 
 children: [
           Text(
-            'Hello, Developer 👋',
+            'Hello, Fest & Tech Explorer 👋',
 style: TextStyle(
               fontSize: 16,
 color: Colors.grey.shade600,
@@ -41,7 +41,7 @@ color: Colors.black,
 const SizedBox(height: 8),
 
 const Text(
-            'Discover. Learn. Connect. Build.',
+            'Discover. Code. Celebrate. Perform.',
 style: TextStyle(
               fontSize: 15,
 fontWeight: FontWeight.w700,
@@ -52,8 +52,8 @@ color: AppTheme.primaryOrange,
 const SizedBox(height: 6),
 
 Text(
-            'Your home for developer communities, tech trends, '
-            'hackathons, and software culture.',
+            'Your all-in-one hub for technical hackathons, coding contests, '
+            'college fests, dance, music, and cultural celebrations.',
 style: TextStyle(
               fontSize: 14,
 color: Colors.grey.shade600,

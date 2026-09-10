@@ -31,17 +31,53 @@ class _EventFormScreenState extends State<EventFormScreen> {
   bool _isUploadingImage = false;
   String? _uploadError;
 
-  String _category = 'Workshops';
-  String _domain = 'Programming';
-  String _level = 'Beginner';
+  String _category = 'College Fest';
+  String _domain = 'Inter-College Fest';
+  String _level = 'All Levels';
   bool _isOnline = false;
   DateTime? _date;
   DateTime? _deadline;
   bool _isSaving = false;
 
-static const _categories = ['Hackathons', 'Coding', 'Workshops', 'Webinars', 'Meetups'];
-static const _domains = ['Web Development', 'App Development', 'AI & ML', 'Data Science', 'Cyber Security', 'Cloud Computing', 'Blockchain', 'IoT', 'Programming'];
-static const _levels = ['Beginner', 'Advanced'];
+static const _categories = [
+    'College Fest',
+'Technical Fest / Hackathon',
+'Cultural Fest',
+'Coding & Development',
+'Dance & Choreography',
+'Music & Singing',
+'Drama & Theatre',
+'Fashion Show',
+'Robotics & IoT',
+'Fine Arts & Photography',
+'Literary & Debating',
+'Concert & Pro-Night',
+'Gaming & Esports',
+'Workshops & Seminars',
+  ];
+static const _domains = [
+    'Inter-College Fest',
+'Hackathon & Ideathon',
+'Competitive Coding',
+'Web & App Development',
+'AI & Machine Learning',
+'Cloud & Cyber Security',
+'Robotics & Embedded',
+'Solo / Group Dance',
+'Battle of the Bands',
+'Classical & Vocals',
+'Street Play (Nukkad)',
+'Stage Play & Skit',
+'Runway & Fashion Walk',
+'Painting & Sketching',
+'Photography & Film',
+'Debate & Quiz',
+'Stand-up & Poetry',
+'EDM & DJ Night',
+'Esports Championship',
+'Campus Carnival',
+  ];
+static const _levels = ['All Levels', 'Beginner', 'Intermediate', 'Advanced'];
 
   @override
   void initState() {
@@ -53,9 +89,11 @@ static const _levels = ['Beginner', 'Advanced'];
     _time = TextEditingController(text: event?.time ?? '');
     _imageUrl = event?.imageUrl ?? '';
     _imagePublicId = event?.imagePublicId;
-    _category = event?.category ?? _category;
-    _domain = event?.domain ?? _domain;
-    _level = event?.level ?? _level;
+if (event != null) {
+      _category = _categories.contains(event.category) ? event.category : _categories.first;
+      _domain = _domains.contains(event.domain) ? event.domain : _domains.first;
+      _level = _levels.contains(event.level) ? event.level : _levels.first;
+    }
     _isOnline = event?.isOnline ?? false;
     _date = event?.date;
     _deadline = event?.registrationDeadline;
@@ -494,7 +532,7 @@ const SizedBox(height: 6),
 Text(
               editing
 ? 'Keep the community updated with the latest event info.'
-: 'Share technical workshops, hackathons, and webinars with the TechCulture community.',
+: 'Share technical hackathons, coding workshops, college fests, and cultural competitions with the TechCulture community.',
 style: TextStyle(
                 fontSize: 14,
 color: Colors.grey.shade600,
@@ -517,7 +555,7 @@ _buildCardWrapper(
 subtitle: 'Event title, summary, category and domain',
 child: Column(
                 children: [
-                  _field(_title, 'Event title', 'e.g. Flutter Workshop 2026', icon: Icons.title_rounded),
+                  _field(_title, 'Event title', 'e.g. Tarang 2026 - Annual Cultural Fest', icon: Icons.title_rounded),
 _field(_description, 'Description', 'Tell attendees what to expect...', lines: 4, icon: Icons.description_outlined),
 _dropdown('Category', _category, _categories, Icons.category_outlined, (value) => setState(() => _category = value!)),
 _dropdown('Domain', _domain, _domains, Icons.domain_rounded, (value) => setState(() => _domain = value!)),
